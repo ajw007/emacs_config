@@ -512,15 +512,9 @@ whatnot on a region."
 (defun bats-file-cache ()
   (interactive)
   (file-cache-clear-cache)
-  (if darwinp
-      (progn
-        (file-cache-add-directory-using-find "~/src/bats/cpp")
-        (file-cache-add-directory-using-find "~/src/bats/python")
-        (file-cache-add-directory-using-find "~/src/bats/sql"))
-    (progn
-      (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
-      (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
-      (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")))
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
   (file-cache-delete-svn))
 
 (defun file-cache-ido-find-file (file)
