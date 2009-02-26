@@ -88,7 +88,7 @@
 
 (ede-cpp-root-project "BATS" 
                       :name "BATS"
-                      :file "~/cpp/Makefile"
+                      :file "~/ecn-git/source/cpp/Makefile"
                       :include-path '("/"
                                       "/libcryptopp"
                                       "/libecnarcabook"
@@ -157,7 +157,7 @@
 
 (ede-cpp-root-project "Python" 
                       :name "Python"
-                      :file "~/python/setup_mtf.py"
+                      :file "~/ecn-git/source/python/setup_mtf.py"
                       :include-path '("/"))
 
 ;; Turn on IDO mode with filecache
