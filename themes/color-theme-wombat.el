@@ -26,7 +26,7 @@
        (modeline-inactive ((t ( :foreground "gray54"  :background "gray17" :box (:style released-button)))))
        (modeline-highlight ((t (:background "#386466"))))
        (minibuffer-prompt ((t (:foreground "skyblue3"))))
-       (vertical-border ((t (:background "gray 10"))))
+       (vertical-border ((t (:background "gray10"))))
        (italic ((t (:foreground "paleGreen3" :italic t ))))
        (bold-italic ((t ( :foreground "dark red" :bold t :italic t ))))
        (bold ((t ( :bold t))))
