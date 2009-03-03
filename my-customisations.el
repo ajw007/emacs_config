@@ -88,76 +88,22 @@
 
 (ede-cpp-root-project "BATS" 
                       :name "BATS"
-                      :file "~/ecn-git/source/cpp/Makefile"
+                      :file "~/ecn.git/source/cpp/Makefile"
                       :include-path '("/"
-                                      "/libcryptopp"
-                                      "/libecnarcabook"
-                                      "/libecnarcamcast"
-                                      "/libecncams"
-                                      "/libecncamsbook"
-                                      "/libecndbut"
-                                      "/libecndrop"
-                                      "/libecnfast"
-                                      "/libecnfastref"
-                                      "/libecnfixbook"
-                                      "/libecnisebook"
-                                      "/libecnkrb5"
-                                      "/libecnlinesvr"
-                                      "/libecnme"
-                                      "/libecnmktdata"
-                                      "/libecnnasdaq"
-                                      "/libecnnsxbook"
-                                      "/libecnpg"
-                                      "/libecnpouch"
-                                      "/libecnpqxx"
-                                      "/libecnqix"
-                                      "/libecnqixbook"
-                                      "/libecnqs"
-                                      "/libecnqtsvr"
-                                      "/libecnreplay"
-                                      "/libecnroute"
-                                      "/libecnrtc"
-                                      "/libecnrules"
-                                      "/libecnshmlog"
-                                      "/libecnsip"
-                                      "/libecnsipbook"
-                                      "/libecnsiphdr"
-                                      "/libecnsiprdr"
-                                      "/libecnsmarts"
-                                      "/libecnsniffer"
-                                      "/libecnsoup"
-                                      "/libecnsvr"
-                                      "/libecntbc"
-                                      "/libecntbm"
-                                      "/libecntraderpt"
-                                      "/libecnut"
-                                      "/libecnweb"
-                                      "/libecnwire"
-                                      "/libexpat"
-                                      "/libmtfanalysis"
-                                      "/libmtfmbbogen"
-                                      "/libmtfqs"
-                                      "/libmtfsymbology"
-                                      "/libmtftraderpt"
-                                      "/libtbarcabook"
-                                      "/libtbfix"
-                                      "/libtbfixflow"
-                                      "/libtbhttpsvr"
-                                      "/libtbipc"
-                                      "/libtbsvr"
-                                      "/libtbtkr"
-                                      "/libtbut"
-                                      "/libzlib"
-                                      "/mtf_analysis"
-                                      "/mtf_competition"
-                                      "/mtf_mbbogen"
-                                      "/mtf_qs"
-                                      "/mtf_qs_stats"
-                                      "/mtf_trf"))
+                                      "/libcryptopp" "/libecnarcabook" "/libecnarcamcast" "/libecncams" "/libecncamsbook" "/libecndbut"
+                                      "/libecndrop" "/libecnfast" "/libecnfastref" "/libecnfixbook" "/libecnisebook" "/libecnkrb5" "/libecnlinesvr"
+                                      "/libecnme" "/libecnmktdata" "/libecnnasdaq" "/libecnnsxbook" "/libecnpg" "/libecnpouch" "/libecnpqxx"
+                                      "/libecnqix" "/libecnqixbook" "/libecnqs" "/libecnqtsvr" "/libecnreplay" "/libecnroute" "/libecnrtc"
+                                      "/libecnrules" "/libecnshmlog" "/libecnsip" "/libecnsipbook" "/libecnsiphdr" "/libecnsiprdr"
+                                      "/libecnsmarts" "/libecnsniffer" "/libecnsoup" "/libecnsvr" "/libecntbc" "/libecntbm" "/libecntraderpt"
+                                      "/libecnut" "/libecnweb" "/libecnwire" "/libexpat" "/libmtfanalysis" "/libmtfmbbogen" "/libmtfqs"
+                                      "/libmtfsymbology" "/libmtftraderpt" "/libtbarcabook" "/libtbfix" "/libtbfixflow" "/libtbhttpsvr"
+                                      "/libtbipc" "/libtbsvr" "/libtbtkr" "/libtbut" "/libzlib" "/mtf_analysis" "/mtf_competition"
+                                      "/mtf_mbbogen" "/mtf_qs" "/mtf_qs_stats" "/mtf_trf"))
 
 (ede-cpp-root-project "Python" 
                       :name "Python"
-                      :file "~/ecn-git/source/python/setup_mtf.py"
+                      :file "~/ecn.git/source/python/setup_mtf.py"
                       :include-path '("/"))
 
 ;; Turn on IDO mode with filecache
@@ -512,9 +458,9 @@ whatnot on a region."
 (defun bats-file-cache ()
   (interactive)
   (file-cache-clear-cache)
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
+  (file-cache-add-directory-using-find "~/ecn.git/source/cpp")
+  (file-cache-add-directory-using-find "~/ecn.git/source/python")
+  (file-cache-add-directory-using-find "~/ecn.git/source/sql")
   (file-cache-delete-svn))
 
 (defun file-cache-ido-find-file (file)
@@ -588,21 +534,17 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-ce"         	'eval-region)
 (global-set-key "\C-cf"         	'file-cache-ido-find-file)
 (global-set-key "\C-ch"         	'list-matching-lines)
+(global-set-key "\C-ci"         	'magit-status)
 (global-set-key "\C-cm"         	'manual-entry)
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
+(global-set-key "\C-ct"         	'org-agenda)
 (global-set-key "\C-cs"         	'shell)
 (global-set-key "\C-cw"         	'swap-windows)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
 (global-set-key [(control r)]   	'isearch-backward-regexp)
-
-;; (setq skeleton-pair t)
-;; (global-set-key (kbd "[")       	'skeleton-pair-insert-maybe)
-;; (global-set-key (kbd "(")       	'skeleton-pair-insert-maybe)
-;; (global-set-key (kbd "{")       	'skeleton-pair-insert-maybe)
-;; (global-set-key (kbd "\"")      	'skeleton-pair-insert-maybe)
 
 (global-set-key [(control ? )]          'hippie-expand)
 (global-set-key [(control return)]      'set-mark-command)
@@ -636,7 +578,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-o") 		'other-window)
 
 (require 'anything-config)
-;;(setq fit-frame-inhibit-fitting-flag t)
+(setq fit-frame-inhibit-fitting-flag t)
 
 ;; My anything sources
 
@@ -651,7 +593,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-info-pages
              anything-c-source-man-pages
              anything-c-source-calculation-result
-             ;;anything-c-source-google-suggest
+             anything-c-source-google-suggest
              anything-c-source-locate
              anything-c-source-emacs-commands))
 
