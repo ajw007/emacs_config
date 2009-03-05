@@ -88,7 +88,7 @@
 
 (ede-cpp-root-project "BATS" 
                       :name "BATS"
-                      :file "~/ecn.git/source/cpp/Makefile"
+                      :file "~/ecn/source/cpp/Makefile"
                       :include-path '("/"
                                       "/libcryptopp" "/libecnarcabook" "/libecnarcamcast" "/libecncams" "/libecncamsbook" "/libecndbut"
                                       "/libecndrop" "/libecnfast" "/libecnfastref" "/libecnfixbook" "/libecnisebook" "/libecnkrb5" "/libecnlinesvr"
@@ -103,7 +103,7 @@
 
 (ede-cpp-root-project "Python" 
                       :name "Python"
-                      :file "~/ecn.git/source/python/setup_mtf.py"
+                      :file "~/ecn/source/python/setup_mtf.py"
                       :include-path '("/"))
 
 ;; Turn on IDO mode with filecache
@@ -458,9 +458,9 @@ whatnot on a region."
 (defun bats-file-cache ()
   (interactive)
   (file-cache-clear-cache)
-  (file-cache-add-directory-using-find "~/ecn.git/source/cpp")
-  (file-cache-add-directory-using-find "~/ecn.git/source/python")
-  (file-cache-add-directory-using-find "~/ecn.git/source/sql")
+  (file-cache-add-directory-using-find "~/ecn/source/cpp")
+  (file-cache-add-directory-using-find "~/ecn/source/python")
+  (file-cache-add-directory-using-find "~/ecn/source/sql")
   (file-cache-delete-svn))
 
 (defun file-cache-ido-find-file (file)
