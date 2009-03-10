@@ -10,7 +10,7 @@
     (color-theme-install
      '(color-theme-wombat
        ((foreground-color . "honeydew2")  ;e8e4d5
-	(background-color . "gray12")
+	(background-color . "black")
 	(background-mode . dark)
 	(cursor-color . "gray47")
 	(border-color . "hotPink"))
