@@ -63,50 +63,6 @@
 ;; Classic emacs selection
 (transient-mark-mode 1)
 
-;; CEDET
-(load-file "~/elisp/cedet/common/cedet.el")
-(global-ede-mode t)
-(semantic-load-enable-excessive-code-helpers)
-(require 'semantic-ia)
-(require 'semantic-gcc)
-
-(semantic-add-system-include "/opt/boost/include/boost-1_33_1" 'c++-mode)
-(semantic-add-system-include "/opt/ecn/users/mburrows/source/ecn/source/python" 'python-mode)
-
-(defun my-cedet-hook ()
-  ;;(local-set-key "." 		'semantic-complete-self-insert)
-  ;;(local-set-key ">" 		'semantic-complete-self-insert)
-  (local-set-key [(shift control down)] 'senator-next-tag)
-  (local-set-key [(shift control up)]   'senator-previous-tag)
-  (local-set-key (kbd "C-c C-j")     	'semantic-ia-fast-jump)
-  (local-set-key (kbd "C-c C-b")     	'semantic-mrub-switch-tags)
-  (local-set-key (kbd "C-c C-r")     	'semantic-symref)
-  (local-set-key (kbd "C-c C-/")     	'semantic-ia-complete-symbol-menu)
-  (local-set-key (kbd "C-c C-.")	'semantic-complete-analyze-inline)
-  (local-set-key (kbd "C-c C-p") 	'semantic-analyze-proto-impl-toggle))
-
-(add-hook 'c-mode-common-hook 'my-cedet-hook)
-
-(ede-cpp-root-project "BATS" 
-                      :name "BATS"
-                      :file "~/ecn/source/cpp/Makefile"
-                      :include-path '("/"
-                                      "/libcryptopp" "/libecnarcabook" "/libecnarcamcast" "/libecncams" "/libecncamsbook" "/libecndbut"
-                                      "/libecndrop" "/libecnfast" "/libecnfastref" "/libecnfixbook" "/libecnisebook" "/libecnkrb5" "/libecnlinesvr"
-                                      "/libecnme" "/libecnmktdata" "/libecnnasdaq" "/libecnnsxbook" "/libecnpg" "/libecnpouch" "/libecnpqxx"
-                                      "/libecnqix" "/libecnqixbook" "/libecnqs" "/libecnqtsvr" "/libecnreplay" "/libecnroute" "/libecnrtc"
-                                      "/libecnrules" "/libecnshmlog" "/libecnsip" "/libecnsipbook" "/libecnsiphdr" "/libecnsiprdr"
-                                      "/libecnsmarts" "/libecnsniffer" "/libecnsoup" "/libecnsvr" "/libecntbc" "/libecntbm" "/libecntraderpt"
-                                      "/libecnut" "/libecnweb" "/libecnwire" "/libexpat" "/libmtfanalysis" "/libmtfmbbogen" "/libmtfqs"
-                                      "/libmtfsymbology" "/libmtftraderpt" "/libtbarcabook" "/libtbfix" "/libtbfixflow" "/libtbhttpsvr"
-                                      "/libtbipc" "/libtbsvr" "/libtbtkr" "/libtbut" "/libzlib" "/mtf_analysis" "/mtf_competition"
-                                      "/mtf_mbbogen" "/mtf_qs" "/mtf_qs_stats" "/mtf_trf"))
-
-(ede-cpp-root-project "Python" 
-                      :name "Python"
-                      :file "~/ecn/source/python/setup_mtf.py"
-                      :include-path '("/"))
-
 ;; Turn on IDO mode with filecache
 (require 'filecache)
 (require 'ido)
