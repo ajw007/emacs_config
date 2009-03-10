@@ -4,6 +4,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(auto-compression-mode t nil (jka-compr))
+ '(browse-url-browser-function (quote browse-url-firefox))
  '(c-basic-offset 4)
  '(c-default-style (quote ((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(case-fold-search t)
