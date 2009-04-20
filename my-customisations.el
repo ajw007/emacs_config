@@ -33,11 +33,16 @@
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
+(require 'auto-install)
+
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 (server-start)
 
 ;; Display the time
 (display-time)
+
+;; Turn off annoying beep
+(setq visible-bell t)
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -84,6 +89,7 @@
 ;; annoying)
 (require 'dired-single)
 
+;; GIT integration
 (require 'magit)
 
 (defun my-dired-init ()
@@ -556,3 +562,23 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key (kbd "C-;") 		'anything)
 (global-set-key "\C-xb" 		'anything)
+
+;; Auto-complete mode
+(require 'auto-complete)
+(global-auto-complete-mode t)
+(require 'auto-complete-yasnippet)
+(require 'auto-complete-python)
+(require 'ac-dabbrev)
+(define-key ac-complete-mode-map "\C-n" 'ac-next)
+(define-key ac-complete-mode-map "\C-p" 'ac-previous)
+(setq ac-auto-start 3)
+(setq ac-dwim t)
+
+(custom-set-variables
+ '(ac-sources
+   '(ac-source-yasnippet
+     ac-source-words-in-buffer
+     ac-source-dabbrev)))
+
+(add-hook 'python-mode-hook '(lambda ()
+                               (add-to-list 'ac-sources 'ac-source-ropemacs)))
