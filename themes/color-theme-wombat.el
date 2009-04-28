@@ -20,7 +20,7 @@
        (default ((t ( :foreground "white"))))
        (region ((t ( :foreground nil :background "#2e3436" ))))
        (underline ((t ( :underline t ))))
-       (modeline ((t ( :foreground "white" :height 0.7 :background "gray26" :box (:style released-button)))))
+       (modeline ((t ( :foreground "white" :background "gray26" :box (:style released-button)))))
        (modeline-buffer-id ((t ( :foreground nil :background nil ))))
        (modeline-mousable ((t ( :foreground "white" :background "4d4d4d" ))))
        (modeline-inactive ((t ( :foreground "gray54"  :background "gray17" :box (:style released-button)))))

@@ -158,11 +158,6 @@
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
 
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-
-(add-hook 'python-mode-hook 'my-cedet-hook)
-
 ;; CC Mode
 (defun my-c-mode-common-hook ()
   (setq c-basic-offset 4)
@@ -502,6 +497,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
+(global-set-key "\C-c\C-r"         	'revert-buffer)
 (global-set-key "\C-ct"         	'org-agenda)
 (global-set-key "\C-cs"         	'shell)
 (global-set-key "\C-cw"         	'swap-windows)
@@ -580,5 +576,3 @@ directory, select directory. Lastly the file is opened."
      ac-source-words-in-buffer
      ac-source-dabbrev)))
 
-(add-hook 'python-mode-hook '(lambda ()
-                               (add-to-list 'ac-sources 'ac-source-ropemacs)))
