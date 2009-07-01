@@ -1,0 +1,8 @@
+#name : try { ... } catch (std::exception&) { ... }
+# --
+try {
+    $0
+}
+catch (const std::exception& ex) {
+
+}

@@ -33,11 +33,16 @@
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
+(require 'auto-install)
+
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 (server-start)
 
 ;; Display the time
 (display-time)
+
+;; Turn off annoying beep
+(setq visible-bell t)
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -84,6 +89,7 @@
 ;; annoying)
 (require 'dired-single)
 
+;; GIT integration
 (require 'magit)
 
 (defun my-dired-init ()
@@ -151,11 +157,6 @@
 (setq ipython-command "/usr/local/bin/ipython")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
-
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-
-(add-hook 'python-mode-hook 'my-cedet-hook)
 
 ;; CC Mode
 (defun my-c-mode-common-hook ()
@@ -496,6 +497,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
+(global-set-key "\C-c\C-r"         	'revert-buffer)
 (global-set-key "\C-ct"         	'org-agenda)
 (global-set-key "\C-cs"         	'shell)
 (global-set-key "\C-cw"         	'swap-windows)
@@ -556,3 +558,21 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key (kbd "C-;") 		'anything)
 (global-set-key "\C-xb" 		'anything)
+
+;; Auto-complete mode
+(require 'auto-complete)
+(global-auto-complete-mode t)
+(require 'auto-complete-yasnippet)
+(require 'auto-complete-python)
+(require 'ac-dabbrev)
+(define-key ac-complete-mode-map "\C-n" 'ac-next)
+(define-key ac-complete-mode-map "\C-p" 'ac-previous)
+(setq ac-auto-start 3)
+(setq ac-dwim t)
+
+(custom-set-variables
+ '(ac-sources
+   '(ac-source-yasnippet
+     ac-source-words-in-buffer
+     ac-source-dabbrev)))
+
