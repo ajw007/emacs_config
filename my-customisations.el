@@ -65,7 +65,8 @@
 ;; Tabs are evil, use spaces always
 (setq-default indent-tabs-mode nil)
 
-;; Classic emacs selection
+;; Enable CUA mode with transient mark selection
+(cua-mode t)
 (transient-mark-mode 1)
 
 ;; Turn on IDO mode with filecache
@@ -137,10 +138,6 @@
 (yas/initialize)
 (yas/load-directory "~/elisp/yasnippet/snippets")
 
-;; Load jabber client
-(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.1")
-(require 'jabber)
-
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
@@ -190,6 +187,26 @@
 (winring-initialize)
 (winring-new-configuration)
 (winring-prev-configuration)
+
+;; ERC (IRC client)
+(require 'erc)
+(erc-autojoin-mode t)
+(setq erc-autojoin-channels-alist
+      '((".*\\.freenode.net" "#emacs")))
+(erc-track-mode t)
+(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                "324" "329" "332" "333" "353" "477"))
+;; don't show any of this
+(setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+
+(defun djcb-erc-start-or-switch ()
+  "Connect to ERC, or switch to last active buffer"
+  (interactive)
+  (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
+
+      (erc-track-switch-buffer 1) ;; yes: switch to last active
+    (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
+      (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
@@ -474,6 +491,32 @@ directory, select directory. Lastly the file is opened."
             (ansi-term term-cmd))
         (ansi-term term-cmd)))))
 
+(defun my-compile ()
+  "Run compile and resize the compile window"
+  (interactive)
+  (progn
+    (call-interactively 'compile)
+    (delete-other-windows)
+    (split-window-vertically 12)
+    (switch-to-buffer "*compilation*")
+    (other-window 1)
+    )
+  )
+
+;; Helper for compilation. Close the compilation window if
+;; there was no error at all.
+(defun compilation-exit-autoclose (status code msg)
+  ;; If M-x compile exists with a 0
+  (when (and (eq status 'exit) (zerop code))
+    ;; then bury the *compilation* buffer, so that C-x b doesn't go there
+    (bury-buffer)
+    ;; and delete the *compilation* window
+    (delete-window (get-buffer-window (get-buffer "*compilation*"))))
+  ;; Always return the anticipated result of compilation-exit-message-function
+  (cons msg code))
+;; Specify my function (maybe I should have done a lambda function)
+(setq compilation-exit-message-function 'compilation-exit-autoclose)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global keybindings                                                         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -487,12 +530,13 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-ca"         	'align)
-(global-set-key "\C-cc"         	'compile)
+(global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
 (global-set-key "\C-cf"         	'file-cache-ido-find-file)
 (global-set-key "\C-ch"         	'list-matching-lines)
 (global-set-key "\C-ci"         	'magit-status)
+(global-set-key "\C-x\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-cm"         	'manual-entry)
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
@@ -506,7 +550,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control r)]   	'isearch-backward-regexp)
 
 (global-set-key [(control ? )]          'hippie-expand)
-(global-set-key [(control return)]      'set-mark-command)
+(global-set-key [(control ?')]          'set-mark-command)
 (global-set-key [(control right)]       'forward-word)
 (global-set-key [(control left)]        'backward-word)
 
@@ -526,7 +570,11 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(shift f2)]            'bc-next)
 (global-set-key [(f3)]          	'bc-local-previous)
 (global-set-key [(shift f3)]            'bc-local-next)
+
 (global-set-key (kbd "<f5>")            'visit-ansi-term)
+(global-set-key [(f6)] 			'djcb-erc-start-or-switch)
+(global-set-key (kbd "<M-prior>") 	'previous-error) 
+(global-set-key (kbd "<M-next>")  	'next-error)
 
 ;;; WINDOW SPLITING
 (global-set-key (kbd "M-5") 		'query-replace)
@@ -536,11 +584,10 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-0") 		'delete-window)
 (global-set-key (kbd "M-o") 		'other-window)
 
+;; Anything config
+
 (require 'anything-config)
 (setq fit-frame-inhibit-fitting-flag t)
-
-;; My anything sources
-
 (setq anything-sources
        (list anything-c-source-buffers
              anything-c-source-buffer-not-found
@@ -556,18 +603,21 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-locate
              anything-c-source-emacs-commands))
 
-(global-set-key (kbd "C-;") 		'anything)
-(global-set-key "\C-xb" 		'anything)
+(global-set-key "\C-xb" 	'anything)
+(global-set-key (kbd "C-;") 	'anything)
 
 ;; Auto-complete mode
 (require 'auto-complete)
 (global-auto-complete-mode t)
 (require 'auto-complete-yasnippet)
 (require 'auto-complete-python)
+(require 'auto-complete-etags)
 (require 'ac-dabbrev)
+(setq ac-auto-start nil)
+(global-set-key "\M-/" 'ac-start)
+(define-key ac-complete-mode-map "\M-/" 'ac-stop)
 (define-key ac-complete-mode-map "\C-n" 'ac-next)
 (define-key ac-complete-mode-map "\C-p" 'ac-previous)
-(setq ac-auto-start 3)
 (setq ac-dwim t)
 
 (custom-set-variables
@@ -575,4 +625,5 @@ directory, select directory. Lastly the file is opened."
    '(ac-source-yasnippet
      ac-source-words-in-buffer
      ac-source-dabbrev)))
+
 
