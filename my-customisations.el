@@ -208,9 +208,6 @@
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
 
-
-(global-set-key [(f6)] 'djcb-erc-start-or-switch) ;; ERC
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -573,7 +570,11 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(shift f2)]            'bc-next)
 (global-set-key [(f3)]          	'bc-local-previous)
 (global-set-key [(shift f3)]            'bc-local-next)
+
 (global-set-key (kbd "<f5>")            'visit-ansi-term)
+(global-set-key [(f6)] 			'djcb-erc-start-or-switch)
+(global-set-key (kbd "<M-prior>") 	'previous-error) 
+(global-set-key (kbd "<M-next>")  	'next-error)
 
 ;;; WINDOW SPLITING
 (global-set-key (kbd "M-5") 		'query-replace)
