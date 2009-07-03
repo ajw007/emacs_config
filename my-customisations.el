@@ -44,6 +44,9 @@
 ;; Turn off annoying beep
 (setq visible-bell t)
 
+;; We like line numbers, so lets have them everywhere
+(global-linum-mode t)
+
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
 
@@ -189,24 +192,24 @@
 (winring-prev-configuration)
 
 ;; ERC (IRC client)
-(require 'erc)
-(erc-autojoin-mode t)
-(setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs")))
-(erc-track-mode t)
-(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                "324" "329" "332" "333" "353" "477"))
-;; don't show any of this
-(setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+;; (require 'erc)
+;; (erc-autojoin-mode t)
+;; (setq erc-autojoin-channels-alist
+;;       '((".*\\.freenode.net" "#emacs")))
+;; (erc-track-mode t)
+;; (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+;;                                 "324" "329" "332" "333" "353" "477"))
+;; ;; don't show any of this
+;; (setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
 
-(defun djcb-erc-start-or-switch ()
-  "Connect to ERC, or switch to last active buffer"
-  (interactive)
-  (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
+;; (defun djcb-erc-start-or-switch ()
+;;   "Connect to ERC, or switch to last active buffer"
+;;   (interactive)
+;;   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
 
-      (erc-track-switch-buffer 1) ;; yes: switch to last active
-    (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
-      (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
+;;       (erc-track-switch-buffer 1) ;; yes: switch to last active
+;;     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
+;;       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
