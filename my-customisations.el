@@ -144,6 +144,8 @@
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
+(require 'stumpwm-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -428,6 +430,12 @@ whatnot on a region."
     (newline)
     (yank)))
 
+(defun eol-insert-semicolon()
+  "Move to EOL and insert a semicolon."
+  (interactive)
+  (end-of-line)
+  (insert ";"))
+
 ;; Filecache configuration
 
 (defun file-cache-delete-svn ()
@@ -561,8 +569,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta down)]   	'move-line-down)
 (global-set-key [(control meta down)]   'duplicate-line-down)
 (global-set-key [(control meta up)]     'duplicate-line-up)
-(global-set-key [(shift control down)]  'end-of-defun)
-(global-set-key [(shift control up)]    'beginning-of-defun)
+(global-set-key [(control meta return)] 'eol-insert-semicolon)
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
