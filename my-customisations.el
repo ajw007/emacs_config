@@ -12,26 +12,6 @@
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 (server-start)
 
-;; Sort out annoyances
-(global-font-lock-mode 1)
-(setq visible-bell t)
-(setq inhibit-splash-screen t)
-(setq use-file-dialog nil)
-(setq use-dialog-box nil)
-(fset 'yes-or-no-p 'y-or-n-p)
-(tool-bar-mode -1)
-(show-paren-mode 1)
-(transient-mark-mode t)
-(delete-selection-mode t)
-(setq case-fold-search t)
-(setq truncate-lines t)
-(blink-cursor-mode 0)
-(setq scroll-bar-mode 'right)
-(display-time-mode t)
-(setq-default indent-tabs-mode nil)
-(setq save-place t)
-(setq fill-column 100)
-
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
 (setq compilation-window-height 10)
@@ -638,4 +618,22 @@ directory, select directory. Lastly the file is opened."
      ac-source-words-in-buffer
      ac-source-dabbrev)))
 
-
+;; Sort out annoyances
+(global-font-lock-mode 1)
+(setq visible-bell t)
+(setq inhibit-splash-screen t)
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(fset 'yes-or-no-p 'y-or-n-p)
+(tool-bar-mode -1)
+(show-paren-mode 1)
+(transient-mark-mode t)
+(delete-selection-mode t)
+(setq case-fold-search t)
+(setq truncate-lines 1)
+(blink-cursor-mode 0)
+(setq scroll-bar-mode 'right)
+(display-time-mode t)
+(setq-default indent-tabs-mode nil)
+(setq save-place t)
+(setq fill-column 100)
