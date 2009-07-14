@@ -1,29 +1,5 @@
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(auto-compression-mode t nil (jka-compr))
- '(browse-url-browser-function (quote browse-url-firefox))
- '(c-basic-offset 4)
- '(c-default-style (quote ((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
- '(case-fold-search t)
- '(column-number-mode t)
- '(current-language-environment "UTF-8")
- '(default-input-method "rfc1345")
- '(delete-selection-mode nil nil (delsel))
- '(display-time-mode t)
- '(global-font-lock-mode t nil (font-lock))
- '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-list try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol try-expand-line)))
- '(save-place t nil (saveplace))
- '(scroll-bar-mode (quote right))
- '(show-paren-mode t nil (paren))
- '(size-indication-mode t)
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
- '(truncate-lines t))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; My customisations                                                          
+;; My emacs customisations                                                          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defconst darwinp
@@ -33,19 +9,46 @@
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
-(require 'auto-install)
-
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 (server-start)
 
-;; Display the time
-(display-time)
-
-;; Turn off annoying beep
+;; Sort out annoyances
+(global-font-lock-mode 1)
 (setq visible-bell t)
+(setq inhibit-splash-screen t)
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(fset 'yes-or-no-p 'y-or-n-p)
+(tool-bar-mode -1)
+(show-paren-mode 1)
+(transient-mark-mode t)
+(delete-selection-mode t)
+(setq case-fold-search t)
+(setq truncate-lines t)
+(blink-cursor-mode 0)
+(setq scroll-bar-mode 'right)
+(display-time-mode t)
+(setq-default indent-tabs-mode nil)
+(setq save-place t)
+(setq fill-column 100)
+
+;; Sort out compilation window behavior
+(setq compilation-scroll-output 'first-error)
+(setq compilation-window-height 10)
+
+;; We don't like line expansion
+(setq hippie-expand-try-functions-list '(try-complete-file-name-partially 
+                                         try-complete-file-name 
+                                         try-expand-all-abbrevs 
+                                         try-expand-list 
+                                         try-expand-dabbrev 
+                                         try-expand-dabbrev-all-buffers 
+                                         try-expand-dabbrev-from-kill 
+                                         try-complete-lisp-symbol-partially 
+                                         try-complete-lisp-symbol))
 
 ;; We like line numbers, so lets have them everywhere
-(global-linum-mode t)
+(unless darwinp (global-linum-mode t))
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -53,6 +56,12 @@
 ;; Support for Subversion version control
 (require 'vc-svn)
 (require 'psvn)
+
+;; Sort out the handling of identically named buffers
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "|")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
 
 ;; Perty colours
 (require 'color-theme)
@@ -65,13 +74,6 @@
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "~/.emacs-backup"))))
 
-;; Tabs are evil, use spaces always
-(setq-default indent-tabs-mode nil)
-
-;; Enable CUA mode with transient mark selection
-(cua-mode t)
-(transient-mark-mode 1)
-
 ;; Turn on IDO mode with filecache
 (require 'filecache)
 (require 'ido)
@@ -82,19 +84,16 @@
 (require 'tramp)
 (setq tramp-default-method "ssh")
 
-;; Get rid of annoying yes/no prompts (replace them with y/n)
-(fset 'yes-or-no-p 'y-or-n-p)
-
 ;; Makes #! scripts executable after saving
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 
+;; GIT integration
+(require 'magit)
+
 ;; Eliminate multiple buffers when browsing a directory (very
 ;; annoying)
 (require 'dired-single)
-
-;; GIT integration
-(require 'magit)
 
 (defun my-dired-init ()
   "Bunch of stuff to run for dired, either immediately or when it's
@@ -122,9 +121,6 @@
 
 ;; Find File At Point
 (require 'ffap)
-
-;; Turn off the toolbar
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
 ;; Turn on ansi color term mode for the shell
 (ansi-color-for-comint-mode-on)
@@ -161,18 +157,11 @@
 (require 'ipython)
 
 ;; CC Mode
-(defun my-c-mode-common-hook ()
-  (setq c-basic-offset 4)
-  ;; make sure that return does an auto indent
-  (define-key c-mode-base-map "\C-m" 'c-context-line-break)
-  ;; make sure access labels dont have an indent
-  (c-set-offset 'access-label '-)
-  ;; dont indent after a namespace 
-  (c-set-offset 'innamespace '-)
-  )
-
-(c-set-offset 'innamespace '-)
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(setq c-basic-offset 4)
+(setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
+(setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
+(setq c-offsets-alist '((case-label . 0) (arglist-close . 0) (innamespace . 0)))
 
 ;; html-helper mode
 (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
@@ -456,9 +445,9 @@ whatnot on a region."
 (defun bats-file-cache ()
   (interactive)
   (file-cache-clear-cache)
-  (file-cache-add-directory-using-find "~/ecn/source/cpp")
-  (file-cache-add-directory-using-find "~/ecn/source/python")
-  (file-cache-add-directory-using-find "~/ecn/source/sql")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
   (file-cache-delete-svn))
 
 (defun file-cache-ido-find-file (file)
@@ -626,8 +615,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-locate
              anything-c-source-emacs-commands))
 
-(global-set-key "\C-xb" 	'anything)
-(global-set-key (kbd "C-;") 	'anything)
+(global-set-key (kbd "C-;") 'anything)
 
 ;; Auto-complete mode
 (require 'auto-complete)
