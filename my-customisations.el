@@ -212,7 +212,9 @@
 
 ;; SLIME mode
 (add-to-list 'load-path "~/src/slime/")
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(if darwinp 
+    (setq inferior-lisp-program "/opt/local/bin/sbcl")
+  (setq inferior-lisp-program "/usr/local/bin/sbcl"))
 (require 'slime-autoloads)
 (slime-setup '(slime-repl))
 
