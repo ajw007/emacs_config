@@ -542,6 +542,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-ca"         	'align)
+(global-set-key "\C-c\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
