@@ -208,15 +208,19 @@
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
 
 ;; Org mode setup
-
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-log-done t)
-(setq org-agenda-files (list "~/org/todo.org"))
+(setq org-agenda-files (list "~/Dropbox/todo.org"))
+(setq org-todo-keywords '("TODO" "STARTED" "WAITING" "DONE"))
+(setq org-agenda-include-diary t)                            
+(setq org-agenda-include-all-todo t)          
 
 ;; SLIME mode
 (add-to-list 'load-path "~/src/slime/")
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(if darwinp 
+    (setq inferior-lisp-program "/opt/local/bin/sbcl")
+  (setq inferior-lisp-program "/usr/local/bin/sbcl"))
 (require 'slime-autoloads)
 (slime-setup '(slime-repl))
 
