@@ -31,16 +31,21 @@
 (setq-default indent-tabs-mode nil)
 (setq save-place t)
 (setq fill-column 100)
+(column-number-mode)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
 (setq compilation-window-height 10)
 
-;; We don't like line expansion
+;; Make text mode the default
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
+
+;; We don't like line or list expansion
 (setq hippie-expand-try-functions-list '(try-complete-file-name-partially 
                                          try-complete-file-name 
                                          try-expand-all-abbrevs 
-                                         try-expand-list 
                                          try-expand-dabbrev 
                                          try-expand-dabbrev-all-buffers 
                                          try-expand-dabbrev-from-kill 
@@ -58,8 +63,9 @@
 (require 'psvn)
 
 ;; Sort out the handling of identically named buffers
+(require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator "|")
+(setq uniquify-separator "/")
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
 
@@ -565,6 +571,7 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key [(control ? )]          'hippie-expand)
 (global-set-key [(control ?')]          'set-mark-command)
+(global-set-key [(control return)]      'set-mark-command)
 (global-set-key [(control right)]       'forward-word)
 (global-set-key [(control left)]        'backward-word)
 
