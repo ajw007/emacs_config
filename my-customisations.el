@@ -209,13 +209,46 @@
 
 ;; Org mode setup
 (require 'org-install)
+(require 'remember)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-log-done t)
-(setq org-agenda-files (list "~/Dropbox/todo.org"))
-(setq org-todo-keywords '("TODO" "STARTED" "WAITING" "DONE"))
+(setq org-agenda-files (list "~/Dropbox/org/todo.org"))
+(setq org-todo-keywords '("TODO(t)" "STARTED(s)" "WAITING(w)" "DONE(d)"))
+(setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
+                               ("STARTED" :foreground "light yellow" :weight bold)
+                               ("DONE" :foreground "forest green" :weight bold)
+                               ("WAITING" :foreground "orange" :weight bold)))
+(setq org-use-fast-todo-selection t)
+(setq org-clock-in-switch-to-state "STARTED")
 (setq org-agenda-include-diary t)                            
-(setq org-agenda-include-all-todo t)          
+(setq org-agenda-include-all-todo t)   
+(setq org-default-notes-file "~/Dropbox/org/todo.org")
+(setq org-completion-use-ido t)
+(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+(setq org-refile-use-outline-path t)
+(setq org-outline-path-complete-in-steps t)
+(org-remember-insinuate)
+(setq org-remember-default-headline "INBOX")
+(setq org-remember-store-without-prompt t)
+(setq org-remember-clock-out-on-exit nil)
 
+;; Start clock if a remember buffer includes :CLOCK-IN:
+(add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
+(defun my-start-clock-if-needed ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward " *:CLOCK-IN: *" nil t)
+      (replace-match "")
+      (org-clock-in))))       
+
+;; Remember templates
+(setq org-remember-templates (quote (("todo" ?t "** TODO %?\n   %u\n   %a" nil nil nil))))
+
+(setq org-agenda-custom-commands 
+      (quote (("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+              ("w" "Tasks waiting on something" todo "WAITING" ((org-agenda-todo-ignore-with-date nil)))
+              ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil))))))
+              
 ;; SLIME mode
 (add-to-list 'load-path "~/src/slime/")
 (if darwinp 
@@ -552,6 +585,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-ca"         	'align)
+(global-set-key "\C-cb"         	'org-iswitchb)
 (global-set-key "\C-c\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
@@ -565,9 +599,13 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
 (global-set-key "\C-c\C-r"         	'revert-buffer)
-(global-set-key "\C-ct"         	'org-agenda)
+(global-set-key (kbd "<f11>")           'org-clock-goto)
+(global-set-key (kbd "C-<f11>")         'org-clock-in)
+(global-set-key (kbd "C-M-r")           'org-remember)
+(global-set-key [(f12)]         	'org-agenda)
 (global-set-key "\C-cl"         	'org-store-link)
 (global-set-key "\C-cs"         	'svn-status)
+(global-set-key "\C-ct"         	'org-todo)
 (global-set-key "\C-cw"         	'swap-windows)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
