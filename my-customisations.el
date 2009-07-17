@@ -206,31 +206,51 @@
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
-
+;;
 ;; Org mode setup
+;;
 (require 'org-install)
-(require 'remember)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(setq org-log-done t)
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+(setq org-log-done (quote time))
+(setq org-log-into-drawer nil)
 (setq org-agenda-files (list "~/Dropbox/org/todo.org"))
-(setq org-todo-keywords '("TODO(t)" "STARTED(s)" "WAITING(w)" "DONE(d)"))
+
+;; ToDo keywords and triggers
+(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)")
+                                (sequence "WAITING(w)" "SOMEDAY(S)" "PROJECT(P)"))))
+
 (setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
                                ("STARTED" :foreground "light yellow" :weight bold)
                                ("DONE" :foreground "forest green" :weight bold)
-                               ("WAITING" :foreground "orange" :weight bold)))
+                               ("WAITING" :foreground "orange" :weight bold)
+                               ("SOMEDAY" :foreground "magenta" :weight bold)
+                               ("PROJECT" :foreground "pink" :weight bold)))
+
 (setq org-use-fast-todo-selection t)
-(setq org-clock-in-switch-to-state "STARTED")
-(setq org-agenda-include-diary t)                            
-(setq org-agenda-include-all-todo t)   
-(setq org-default-notes-file "~/Dropbox/org/todo.org")
-(setq org-completion-use-ido t)
-(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
-(setq org-refile-use-outline-path t)
-(setq org-outline-path-complete-in-steps t)
+
+(setq org-todo-state-tags-triggers
+      (quote ((done ("NEXT"))
+              ("PROJECT" ("PROJECT" . t)))))
+
+(setq org-stuck-projects (quote ("+PROJECT" nil ("NEXT") "")))
+(setq org-enforce-todo-dependencies t)
+(setq org-insert-heading-respect-content t)
+
+;; Tags
+(setq org-tag-alist (quote ((:startgroup)
+                            ("@work" . ?w)
+                            ("@home" . ?h)
+                            ("@online" . ?o)
+                            (:endgroup)
+                            ("NEXT" . ?n)
+                            ("PROJECT" . ?p))))
+
+(setq org-fast-tag-selection-single-key 'expert)
+
+;; Remember templates
+(require 'remember)
 (org-remember-insinuate)
-(setq org-remember-default-headline "INBOX")
-(setq org-remember-store-without-prompt t)
-(setq org-remember-clock-out-on-exit nil)
+(setq org-default-notes-file "~/Dropbox/org/todo.org")
 
 ;; Start clock if a remember buffer includes :CLOCK-IN:
 (add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
@@ -241,14 +261,77 @@
       (replace-match "")
       (org-clock-in))))       
 
-;; Remember templates
-(setq org-remember-templates (quote (("todo" ?t "** TODO %?\n   %u\n   %a" nil nil nil))))
+(setq org-remember-default-headline "INBOX")
+(setq org-remember-store-without-prompt t)
+(setq org-remember-clock-out-on-exit nil)
 
+(setq org-remember-templates (quote (("todo" ?t "** TODO %?\n   %u\n   %a" nil nil nil)
+                                     ("note" ?n "** %?     :NOTE:\n   %u\n   %a" nil "Notes" nil))))
+
+;; Refile settings
+(setq org-completion-use-ido t)
+(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+(setq org-refile-use-outline-path t)
+(setq org-outline-path-complete-in-steps t)
+                            
+;; Custom agenda views
 (setq org-agenda-custom-commands 
-      (quote (("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+      (quote (("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
+              ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
               ("w" "Tasks waiting on something" todo "WAITING" ((org-agenda-todo-ignore-with-date nil)))
-              ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil))))))
-              
+              ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
+              ("N" "Notes" tags "NOTE" nil))))
+
+(add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+(setq org-agenda-todo-ignore-with-date t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-include-diary nil)
+(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
+(setq org-agenda-repeating-timestamp-show-all t)
+(setq org-agenda-show-all-dates t)
+(setq org-agenda-start-on-weekday nil)
+(setq org-deadline-warning-days 30)
+(setq org-agenda-tags-todo-honor-ignore-options t)
+
+(setq org-agenda-sorting-strategy
+      (quote ((agenda time-up priority-down effort-up category-up)
+              (todo priority-down)
+              (tags priority-down))))
+
+;; Disable display of the time grid
+(setq org-agenda-time-grid
+      (quote (nil "----------------"
+                  (800 1000 1200 1400 1600 1800 2000))))
+
+;; Clock control
+(setq org-clock-persistence-insinuate)
+(setq org-clock-history-length 35)
+(setq org-clock-in-resume t)
+(setq org-clock-in-switch-to-state "STARTED")
+(setq org-clock-into-drawer t)
+(setq org-clock-out-remove-zero-time-clocks t)
+(setq org-clock-persist t)
+(setq org-time-stamp-rounding-minutes (quote (1 5)))
+
+(defun my-org-todo ()
+  (interactive)
+  (org-narrow-to-subtree)
+  (org-show-todo-tree nil)
+  (widen))
+
+;; Search results
+(setq org-show-following-heading t)
+(setq org-show-hierarchy-above t)
+(setq org-show-siblings nil)
+
+;; Special key bindings for org mode headlines
+(setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-k t)
+(setq org-yank-adjusted-subtrees t)
+
+(setq org-table-export-default-format "orgtbl-to-csv")
+
 ;; SLIME mode
 (add-to-list 'load-path "~/src/slime/")
 (if darwinp 
@@ -602,6 +685,8 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "<f11>")           'org-clock-goto)
 (global-set-key (kbd "C-<f11>")         'org-clock-in)
 (global-set-key (kbd "C-M-r")           'org-remember)
+(global-set-key (kbd "<f7>")            'my-org-todo)
+(global-set-key (kbd "<S-f7>")          'widen)
 (global-set-key [(f12)]         	'org-agenda)
 (global-set-key "\C-cl"         	'org-store-link)
 (global-set-key "\C-cs"         	'svn-status)
