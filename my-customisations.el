@@ -1,29 +1,5 @@
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(auto-compression-mode t nil (jka-compr))
- '(browse-url-browser-function (quote browse-url-firefox))
- '(c-basic-offset 4)
- '(c-default-style (quote ((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
- '(case-fold-search t)
- '(column-number-mode t)
- '(current-language-environment "UTF-8")
- '(default-input-method "rfc1345")
- '(delete-selection-mode nil nil (delsel))
- '(display-time-mode t)
- '(global-font-lock-mode t nil (font-lock))
- '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-list try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol try-expand-line)))
- '(save-place t nil (saveplace))
- '(scroll-bar-mode (quote right))
- '(show-paren-mode t nil (paren))
- '(size-indication-mode t)
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
- '(truncate-lines t))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; My customisations                                                          
+;; My emacs customisations                                                          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defconst darwinp
@@ -33,16 +9,51 @@
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
-(require 'auto-install)
-
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 (server-start)
 
-;; Display the time
-(display-time)
-
-;; Turn off annoying beep
+;; Sort out annoyances
+(global-font-lock-mode 1)
 (setq visible-bell t)
+(setq inhibit-splash-screen t)
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(fset 'yes-or-no-p 'y-or-n-p)
+(tool-bar-mode -1)
+(show-paren-mode 1)
+(transient-mark-mode t)
+(delete-selection-mode t)
+(setq case-fold-search t)
+(setq truncate-lines 1)
+(blink-cursor-mode 0)
+(setq scroll-bar-mode 'right)
+(display-time-mode t)
+(setq-default indent-tabs-mode nil)
+(setq save-place t)
+(setq fill-column 100)
+(column-number-mode)
+
+;; Sort out compilation window behavior
+(setq compilation-scroll-output 'first-error)
+(setq compilation-window-height 10)
+
+;; Make text mode the default
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
+
+;; We don't like line or list expansion
+(setq hippie-expand-try-functions-list '(try-complete-file-name-partially 
+                                         try-complete-file-name 
+                                         try-expand-all-abbrevs 
+                                         try-expand-dabbrev 
+                                         try-expand-dabbrev-all-buffers 
+                                         try-expand-dabbrev-from-kill 
+                                         try-complete-lisp-symbol-partially 
+                                         try-complete-lisp-symbol))
+
+;; We like line numbers, so lets have them everywhere
+(unless darwinp (global-linum-mode t))
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -50,6 +61,13 @@
 ;; Support for Subversion version control
 (require 'vc-svn)
 (require 'psvn)
+
+;; Sort out the handling of identically named buffers
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
 
 ;; Perty colours
 (require 'color-theme)
@@ -62,13 +80,6 @@
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "~/.emacs-backup"))))
 
-;; Tabs are evil, use spaces always
-(setq-default indent-tabs-mode nil)
-
-;; Enable CUA mode with transient mark selection
-(cua-mode t)
-(transient-mark-mode 1)
-
 ;; Turn on IDO mode with filecache
 (require 'filecache)
 (require 'ido)
@@ -79,19 +90,16 @@
 (require 'tramp)
 (setq tramp-default-method "ssh")
 
-;; Get rid of annoying yes/no prompts (replace them with y/n)
-(fset 'yes-or-no-p 'y-or-n-p)
-
 ;; Makes #! scripts executable after saving
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 
+;; GIT integration
+(require 'magit)
+
 ;; Eliminate multiple buffers when browsing a directory (very
 ;; annoying)
 (require 'dired-single)
-
-;; GIT integration
-(require 'magit)
 
 (defun my-dired-init ()
   "Bunch of stuff to run for dired, either immediately or when it's
@@ -120,9 +128,6 @@
 ;; Find File At Point
 (require 'ffap)
 
-;; Turn off the toolbar
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-
 ;; Turn on ansi color term mode for the shell
 (ansi-color-for-comint-mode-on)
 
@@ -141,6 +146,8 @@
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
+(require 'stumpwm-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -156,18 +163,11 @@
 (require 'ipython)
 
 ;; CC Mode
-(defun my-c-mode-common-hook ()
-  (setq c-basic-offset 4)
-  ;; make sure that return does an auto indent
-  (define-key c-mode-base-map "\C-m" 'c-context-line-break)
-  ;; make sure access labels dont have an indent
-  (c-set-offset 'access-label '-)
-  ;; dont indent after a namespace 
-  (c-set-offset 'innamespace '-)
-  )
-
-(c-set-offset 'innamespace '-)
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(setq c-basic-offset 4)
+(setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
+(setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
+(setq c-offsets-alist '((case-label . 0) (arglist-close . 0) (innamespace . 0)))
 
 ;; html-helper mode
 (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
@@ -203,10 +203,142 @@
   "Connect to ERC, or switch to last active buffer"
   (interactive)
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
-
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
+;;
+;; Org mode setup
+;;
+(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+(setq org-log-done (quote time))
+(setq org-log-into-drawer nil)
+(setq org-agenda-files (list "~/Dropbox/org/todo.org"))
+
+;; ToDo keywords and triggers
+(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)")
+                                (sequence "WAITING(w)" "SOMEDAY(S)" "PROJECT(P)"))))
+
+(setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
+                               ("STARTED" :foreground "light yellow" :weight bold)
+                               ("DONE" :foreground "forest green" :weight bold)
+                               ("WAITING" :foreground "orange" :weight bold)
+                               ("SOMEDAY" :foreground "magenta" :weight bold)
+                               ("PROJECT" :foreground "pink" :weight bold)))
+
+(setq org-use-fast-todo-selection t)
+
+(setq org-todo-state-tags-triggers
+      (quote ((done ("NEXT"))
+              ("PROJECT" ("PROJECT" . t)))))
+
+(setq org-stuck-projects (quote ("+PROJECT" nil ("NEXT") "")))
+(setq org-enforce-todo-dependencies t)
+(setq org-insert-heading-respect-content t)
+
+;; Tags
+(setq org-tag-alist (quote ((:startgroup)
+                            ("@work" . ?w)
+                            ("@home" . ?h)
+                            ("@online" . ?o)
+                            (:endgroup)
+                            ("NEXT" . ?n)
+                            ("PROJECT" . ?p))))
+
+(setq org-fast-tag-selection-single-key 'expert)
+
+;; Remember templates
+(require 'remember)
+(org-remember-insinuate)
+(setq org-default-notes-file "~/Dropbox/org/todo.org")
+
+;; Start clock if a remember buffer includes :CLOCK-IN:
+(add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
+(defun my-start-clock-if-needed ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward " *:CLOCK-IN: *" nil t)
+      (replace-match "")
+      (org-clock-in))))       
+
+(setq org-remember-default-headline "INBOX")
+(setq org-remember-store-without-prompt t)
+(setq org-remember-clock-out-on-exit nil)
+
+(setq org-remember-templates (quote (("todo" ?t "** TODO %?\n   %u\n   %a" nil nil nil)
+                                     ("note" ?n "** %?     :NOTE:\n   %u\n   %a" nil "Notes" nil))))
+
+;; Refile settings
+(setq org-completion-use-ido t)
+(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+(setq org-refile-use-outline-path t)
+(setq org-outline-path-complete-in-steps t)
+                            
+;; Custom agenda views
+(setq org-agenda-custom-commands 
+      (quote (("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
+              ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+              ("w" "Tasks waiting on something" todo "WAITING" ((org-agenda-todo-ignore-with-date nil)))
+              ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
+              ("N" "Notes" tags "NOTE" nil))))
+
+(add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+(setq org-agenda-todo-ignore-with-date t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-include-diary nil)
+(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
+(setq org-agenda-repeating-timestamp-show-all t)
+(setq org-agenda-show-all-dates t)
+(setq org-agenda-start-on-weekday nil)
+(setq org-deadline-warning-days 30)
+(setq org-agenda-tags-todo-honor-ignore-options t)
+
+(setq org-agenda-sorting-strategy
+      (quote ((agenda time-up priority-down effort-up category-up)
+              (todo priority-down)
+              (tags priority-down))))
+
+;; Disable display of the time grid
+(setq org-agenda-time-grid
+      (quote (nil "----------------"
+                  (800 1000 1200 1400 1600 1800 2000))))
+
+;; Clock control
+(setq org-clock-persistence-insinuate)
+(setq org-clock-history-length 35)
+(setq org-clock-in-resume t)
+(setq org-clock-in-switch-to-state "STARTED")
+(setq org-clock-into-drawer t)
+(setq org-clock-out-remove-zero-time-clocks t)
+(setq org-clock-persist t)
+(setq org-time-stamp-rounding-minutes (quote (1 5)))
+
+(defun my-org-todo ()
+  (interactive)
+  (org-narrow-to-subtree)
+  (org-show-todo-tree nil)
+  (widen))
+
+;; Search results
+(setq org-show-following-heading t)
+(setq org-show-hierarchy-above t)
+(setq org-show-siblings nil)
+
+;; Special key bindings for org mode headlines
+(setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-k t)
+(setq org-yank-adjusted-subtrees t)
+
+(setq org-table-export-default-format "orgtbl-to-csv")
+
+;; SLIME mode
+(add-to-list 'load-path "~/src/slime/")
+(if darwinp 
+    (setq inferior-lisp-program "/opt/local/bin/sbcl")
+  (setq inferior-lisp-program "/usr/local/bin/sbcl"))
+(require 'slime-autoloads)
+(slime-setup '(slime-repl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
@@ -425,6 +557,12 @@ whatnot on a region."
     (newline)
     (yank)))
 
+(defun eol-insert-semicolon()
+  "Move to EOL and insert a semicolon."
+  (interactive)
+  (end-of-line)
+  (insert ";"))
+
 ;; Filecache configuration
 
 (defun file-cache-delete-svn ()
@@ -433,9 +571,9 @@ whatnot on a region."
 (defun bats-file-cache ()
   (interactive)
   (file-cache-clear-cache)
-  (file-cache-add-directory-using-find "~/ecn/source/cpp")
-  (file-cache-add-directory-using-find "~/ecn/source/python")
-  (file-cache-add-directory-using-find "~/ecn/source/sql")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
+  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
   (file-cache-delete-svn))
 
 (defun file-cache-ido-find-file (file)
@@ -530,6 +668,8 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-ca"         	'align)
+(global-set-key "\C-cb"         	'org-iswitchb)
+(global-set-key "\C-c\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
@@ -542,8 +682,15 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
 (global-set-key "\C-c\C-r"         	'revert-buffer)
-(global-set-key "\C-ct"         	'org-agenda)
-(global-set-key "\C-cs"         	'shell)
+(global-set-key (kbd "<f11>")           'org-clock-goto)
+(global-set-key (kbd "C-<f11>")         'org-clock-in)
+(global-set-key (kbd "C-M-r")           'org-remember)
+(global-set-key (kbd "<f7>")            'my-org-todo)
+(global-set-key (kbd "<S-f7>")          'widen)
+(global-set-key [(f12)]         	'org-agenda)
+(global-set-key "\C-cl"         	'org-store-link)
+(global-set-key "\C-cs"         	'svn-status)
+(global-set-key "\C-ct"         	'org-todo)
 (global-set-key "\C-cw"         	'swap-windows)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
@@ -551,6 +698,7 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key [(control ? )]          'hippie-expand)
 (global-set-key [(control ?')]          'set-mark-command)
+(global-set-key [(control return)]      'set-mark-command)
 (global-set-key [(control right)]       'forward-word)
 (global-set-key [(control left)]        'backward-word)
 
@@ -558,8 +706,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta down)]   	'move-line-down)
 (global-set-key [(control meta down)]   'duplicate-line-down)
 (global-set-key [(control meta up)]     'duplicate-line-up)
-(global-set-key [(shift control down)]  'end-of-defun)
-(global-set-key [(shift control up)]    'beginning-of-defun)
+(global-set-key [(control meta return)] 'eol-insert-semicolon)
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
@@ -603,8 +750,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-locate
              anything-c-source-emacs-commands))
 
-(global-set-key "\C-xb" 	'anything)
-(global-set-key (kbd "C-;") 	'anything)
+(global-set-key (kbd "C-;") 'anything)
 
 ;; Auto-complete mode
 (require 'auto-complete)
@@ -625,5 +771,4 @@ directory, select directory. Lastly the file is opened."
    '(ac-source-yasnippet
      ac-source-words-in-buffer
      ac-source-dabbrev)))
-
 

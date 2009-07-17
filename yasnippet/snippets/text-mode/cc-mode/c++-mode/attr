@@ -1,0 +1,3 @@
+#name : XML Attribute
+# --
+${1:nodeName}.attribute("${2:name}", ${3:value}, true)$0
