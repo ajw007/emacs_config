@@ -210,10 +210,15 @@
 ;; Org mode setup
 ;;
 (require 'org-install)
+(require 'org-checklist)
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 (setq org-log-done (quote time))
 (setq org-log-into-drawer nil)
-(setq org-agenda-files (list "~/Dropbox/org/todo.org"))
+(setq org-cycle-separator-lines 0)
+(setq org-reverse-note-order nil)
+(setq org-agenda-files (quote ("~/Dropbox/org/refile.org"
+                               "~/Dropbox/org/work.org"
+                               "~/Dropbox/org/home.org")))
 
 ;; ToDo keywords and triggers
 (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)")
@@ -229,7 +234,11 @@
 (setq org-use-fast-todo-selection t)
 
 (setq org-todo-state-tags-triggers
-      (quote ((done ("NEXT"))
+      (quote (("WAITING" ("WAITING" . t) ("NEXT"))
+              ("SOMEDAY" ("WAITING" . t))
+              (done ("NEXT") ("WAITING"))
+              ("TODO" ("WAITING"))
+              ("STARTED" ("WAITING"))
               ("PROJECT" ("PROJECT" . t)))))
 
 (setq org-stuck-projects (quote ("+PROJECT" nil ("NEXT") "")))
@@ -240,17 +249,19 @@
 (setq org-tag-alist (quote ((:startgroup)
                             ("@work" . ?w)
                             ("@home" . ?h)
-                            ("@online" . ?o)
+                            ("@grantham" . ?g)
+                            ("@london" . ?l)
                             (:endgroup)
                             ("NEXT" . ?n)
-                            ("PROJECT" . ?p))))
+                            ("PROJECT" . ?p)
+                            ("WAITING" . ?f))))
 
 (setq org-fast-tag-selection-single-key 'expert)
 
 ;; Remember templates
 (require 'remember)
 (org-remember-insinuate)
-(setq org-default-notes-file "~/Dropbox/org/todo.org")
+(setq org-default-notes-file "~/Dropbox/org/refile.org")
 
 ;; Start clock if a remember buffer includes :CLOCK-IN:
 (add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
@@ -261,26 +272,26 @@
       (replace-match "")
       (org-clock-in))))       
 
-(setq org-remember-default-headline "INBOX")
+(setq org-remember-default-headline "Tasks")
 (setq org-remember-store-without-prompt t)
 (setq org-remember-clock-out-on-exit nil)
 
-(setq org-remember-templates (quote (("todo" ?t "** TODO %?\n   %u\n   %a" nil nil nil)
-                                     ("note" ?n "** %?     :NOTE:\n   %u\n   %a" nil "Notes" nil))))
+(setq org-remember-templates (quote (("todo" ?t "* TODO %?\n   %u\n   %a" nil bottom nil)
+                                     ("note" ?n "* %?     :NOTE:\n   %u\n   %a" nil bottom nil))))
 
 ;; Refile settings
 (setq org-completion-use-ido t)
 (setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
-(setq org-refile-use-outline-path t)
+(setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)
                             
 ;; Custom agenda views
 (setq org-agenda-custom-commands 
-      (quote (("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
+      (quote (("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
               ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-              ("w" "Tasks waiting on something" todo "WAITING" ((org-agenda-todo-ignore-with-date nil)))
+              ("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
               ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
-              ("N" "Notes" tags "NOTE" nil))))
+              ("n" "Notes" tags "NOTE" nil))))
 
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 (setq org-agenda-todo-ignore-with-date t)
@@ -313,12 +324,6 @@
 (setq org-clock-out-remove-zero-time-clocks t)
 (setq org-clock-persist t)
 (setq org-time-stamp-rounding-minutes (quote (1 5)))
-
-(defun my-org-todo ()
-  (interactive)
-  (org-narrow-to-subtree)
-  (org-show-todo-tree nil)
-  (widen))
 
 ;; Search results
 (setq org-show-following-heading t)
@@ -667,7 +672,8 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta ?!)]     	'custom-shell-command-on-region)
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
-(global-set-key "\C-ca"         	'align)
+(global-set-key "\C-ca"         	'org-agenda)
+(global-set-key "\C-c\C-a"         	'align)
 (global-set-key "\C-cb"         	'org-iswitchb)
 (global-set-key "\C-c\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
@@ -685,7 +691,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "<f11>")           'org-clock-goto)
 (global-set-key (kbd "C-<f11>")         'org-clock-in)
 (global-set-key (kbd "C-M-r")           'org-remember)
-(global-set-key (kbd "<f7>")            'my-org-todo)
+(global-set-key (kbd "<f7>")            'org-narrow-to-subtree)
 (global-set-key (kbd "<S-f7>")          'widen)
 (global-set-key [(f12)]         	'org-agenda)
 (global-set-key "\C-cl"         	'org-store-link)
