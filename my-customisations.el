@@ -206,140 +206,9 @@
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
-;;
+
 ;; Org mode setup
-;;
-(require 'org-install)
-(require 'org-checklist)
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-(setq org-log-done (quote time))
-(setq org-log-into-drawer nil)
-(setq org-cycle-separator-lines 0)
-(setq org-reverse-note-order nil)
-(setq org-agenda-files (quote ("~/Dropbox/org/refile.org"
-                               "~/Dropbox/org/work.org"
-                               "~/Dropbox/org/home.org")))
-
-;; ToDo keywords and triggers
-(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
-                                (sequence "WAITING(f@/!)" "SOMEDAY(S!)" "PROJECT(p@)"))))
-
-(setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
-                               ("STARTED" :foreground "light yellow" :weight bold)
-                               ("DONE" :foreground "forest green" :weight bold)
-                               ("WAITING" :foreground "orange" :weight bold)
-                               ("SOMEDAY" :foreground "magenta" :weight bold)
-                               ("PROJECT" :foreground "pink" :weight bold)))
-
-(setq org-use-fast-todo-selection t)
-
-(setq org-todo-state-tags-triggers
-      (quote (("WAITING" ("WAITING" . t) ("NEXT"))
-              ("SOMEDAY" ("WAITING" . t))
-              (done ("NEXT") ("WAITING"))
-              ("TODO" ("WAITING"))
-              ("STARTED" ("WAITING"))
-              ("PROJECT" ("PROJECT" . t)))))
-
-(setq org-stuck-projects (quote ("+PROJECT" nil ("NEXT") "")))
-(setq org-enforce-todo-dependencies t)
-(setq org-insert-heading-respect-content t)
-
-;; Tags
-(setq org-tag-alist (quote ((:startgroup)
-                            ("@work" . ?w)
-                            ("@home" . ?h)
-                            ("@grantham" . ?g)
-                            ("@london" . ?l)
-                            (:endgroup)
-                            ("NEXT" . ?n)
-                            ("WAITING" . ?f)
-                            ("PROJECT" . ?p))))
-
-(setq org-fast-tag-selection-single-key 'expert)
-
-;; Remember templates
-(require 'remember)
-(org-remember-insinuate)
-(setq org-default-notes-file "~/Dropbox/org/refile.org")
-
-;; Start clock if a remember buffer includes :CLOCK-IN:
-(add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
-(defun my-start-clock-if-needed ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward " *:CLOCK-IN: *" nil t)
-      (replace-match "")
-      (org-clock-in))))       
-
-(setq org-remember-default-headline "Tasks")
-(setq org-remember-store-without-prompt t)
-(setq org-remember-clock-out-on-exit nil)
-
-(setq org-remember-templates (quote (("todo" ?t "* TODO %?\n   %u\n   %a" nil bottom nil)
-                                     ("note" ?n "* %?     :NOTE:\n   %u\n   %a" nil bottom nil))))
-
-;; Refile settings
-(setq org-completion-use-ido t)
-(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
-(setq org-refile-use-outline-path 'file)
-(setq org-outline-path-complete-in-steps t)
-                            
-;; Custom agenda views
-(setq org-agenda-custom-commands 
-      (quote (("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
-              ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-              ("w" "Work Tasks" tags-todo "@work|@london" nil)
-              ("h" "Home Tasks" tags-todo "@home|@grantham" nil)
-              ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
-              ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
-              ("N" "Notes" tags "NOTE" nil))))
-
-(add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
-(setq org-agenda-todo-ignore-with-date t)
-(setq org-agenda-skip-deadline-if-done t)
-(setq org-agenda-skip-scheduled-if-done t)
-(setq org-agenda-include-diary nil)
-(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
-(setq org-agenda-repeating-timestamp-show-all t)
-(setq org-agenda-show-all-dates t)
-(setq org-agenda-start-on-weekday nil)
-(setq org-deadline-warning-days 30)
-(setq org-agenda-tags-todo-honor-ignore-options t)
-(setq org-agenda-log-mode-items '(clock))
-(setq org-agenda-clockreport-parameter-plist (quote (:link nil :maxlevel 2)))
-
-(setq org-agenda-sorting-strategy
-      (quote ((agenda time-up priority-down effort-up category-up)
-              (todo priority-down)
-              (tags priority-down))))
-
-;; Disable display of the time grid
-(setq org-agenda-time-grid
-      (quote (nil "----------------"
-                  (800 1000 1200 1400 1600 1800 2000))))
-
-;; Clock control
-(setq org-clock-persistence-insinuate)
-(setq org-clock-history-length 35)
-(setq org-clock-in-resume t)
-(setq org-clock-in-switch-to-state "STARTED")
-(setq org-clock-into-drawer t)
-(setq org-clock-out-remove-zero-time-clocks t)
-(setq org-clock-persist t)
-(setq org-time-stamp-rounding-minutes (quote (1 5)))
-
-;; Search results
-(setq org-show-following-heading t)
-(setq org-show-hierarchy-above t)
-(setq org-show-siblings nil)
-
-;; Special key bindings for org mode headlines
-(setq org-special-ctrl-a/e t)
-(setq org-special-ctrl-k t)
-(setq org-yank-adjusted-subtrees t)
-
-(setq org-table-export-default-format "orgtbl-to-csv")
+(load-file "~/elisp/my-org-mode.el")
 
 ;; SLIME mode
 (add-to-list 'load-path "~/src/slime/")
@@ -676,10 +545,8 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta ?!)]     	'custom-shell-command-on-region)
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
-(global-set-key "\C-ca"         	'org-agenda)
 (global-set-key "\C-c\C-a"         	'align)
 (global-set-key "\C-x\C-a"         	'align-regexp)
-(global-set-key "\C-cb"         	'org-iswitchb)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
@@ -692,15 +559,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
 (global-set-key "\C-c\C-r"         	'revert-buffer)
-(global-set-key (kbd "<f11>")           'org-clock-goto)
-(global-set-key (kbd "C-<f11>")         'org-clock-in)
-(global-set-key (kbd "C-M-r")           'org-remember)
-(global-set-key (kbd "<f7>")            'org-narrow-to-subtree)
-(global-set-key (kbd "<S-f7>")          'widen)
-(global-set-key [(f12)]         	'org-agenda)
-(global-set-key "\C-cl"         	'org-store-link)
 (global-set-key "\C-cs"         	'svn-status)
-(global-set-key "\C-ct"         	'org-todo)
 (global-set-key "\C-cw"         	'swap-windows)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
@@ -720,16 +579,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
-(require 'breadcrumb)
-(global-set-key [(f1)]          	'bc-list)
-(global-set-key [(control f2)]          'bc-set)
-(global-set-key [(f2)]                  'bc-previous)
-(global-set-key [(shift f2)]            'bc-next)
-(global-set-key [(f3)]          	'bc-local-previous)
-(global-set-key [(shift f3)]            'bc-local-next)
-
 (global-set-key (kbd "<f5>")            'visit-ansi-term)
-(global-set-key [(f6)] 			'djcb-erc-start-or-switch)
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
