@@ -155,7 +155,7 @@
 (setq org-agenda-tags-todo-honor-ignore-options t)
 
 ; Define a stuck project as one that has no next action
-(setq org-stuck-projects '("+PROJECT" nil ("NEXT") ""))
+(setq org-stuck-projects '("/PROJECT" nil ("NEXT") ""))
 
 ; Erase all reminders and rebuilt reminders for today from the agenda
 (defun my-org-agenda-to-appt ()
