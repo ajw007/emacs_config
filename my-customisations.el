@@ -289,9 +289,11 @@
 (setq org-agenda-custom-commands 
       (quote (("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
               ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-              ("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
+              ("w" "Work Tasks" tags-todo "@work|@london" nil)
+              ("h" "Home Tasks" tags-todo "@home|@grantham" nil)
+              ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
               ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
-              ("n" "Notes" tags "NOTE" nil))))
+              ("N" "Notes" tags "NOTE" nil))))
 
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 (setq org-agenda-todo-ignore-with-date t)
