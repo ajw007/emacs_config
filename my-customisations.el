@@ -221,8 +221,8 @@
                                "~/Dropbox/org/home.org")))
 
 ;; ToDo keywords and triggers
-(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)")
-                                (sequence "WAITING(w)" "SOMEDAY(S)" "PROJECT(P)"))))
+(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
+                                (sequence "WAITING(f@/!)" "SOMEDAY(S!)" "PROJECT(p@)"))))
 
 (setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
                                ("STARTED" :foreground "light yellow" :weight bold)
@@ -253,8 +253,8 @@
                             ("@london" . ?l)
                             (:endgroup)
                             ("NEXT" . ?n)
-                            ("PROJECT" . ?p)
-                            ("WAITING" . ?f))))
+                            ("WAITING" . ?f)
+                            ("PROJECT" . ?p))))
 
 (setq org-fast-tag-selection-single-key 'expert)
 
@@ -306,6 +306,8 @@
 (setq org-agenda-start-on-weekday nil)
 (setq org-deadline-warning-days 30)
 (setq org-agenda-tags-todo-honor-ignore-options t)
+(setq org-agenda-log-mode-items '(clock))
+(setq org-agenda-clockreport-parameter-plist (quote (:link nil :maxlevel 2)))
 
 (setq org-agenda-sorting-strategy
       (quote ((agenda time-up priority-down effort-up category-up)
@@ -676,8 +678,8 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key "\C-ca"         	'org-agenda)
 (global-set-key "\C-c\C-a"         	'align)
+(global-set-key "\C-x\C-a"         	'align-regexp)
 (global-set-key "\C-cb"         	'org-iswitchb)
-(global-set-key "\C-c\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
