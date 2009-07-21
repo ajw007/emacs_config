@@ -246,3 +246,14 @@
 ;; Logging
 (setq org-log-done 'time)
 (setq org-log-into-drawer nil)
+
+;; Make moving between links in an org-mode buffer easier
+(add-hook 'org-load-hook
+            (lambda ()
+              (define-key 'org-mode-map "\C-n" 'org-next-link)
+              (define-key 'org-mode-map "\C-p" 'org-previous-link)))
+
+;; Setup some link abbrevs for easier typing
+(setq org-link-abbrev-alist
+      '(("bug" . "http://bugzilla/show_bug.cgi?id=")
+        ("google"   . "http://www.google.com/search?q=")))
