@@ -158,6 +158,12 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (set (make-variable-buffer-local 'beginning-of-defun-function)
+                 'py-beginning-of-def-or-class)
+            (setq outline-regexp "def\\|class ")))
+
 (setq ipython-command "/usr/local/bin/ipython")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
@@ -217,6 +223,18 @@
   (setq inferior-lisp-program "/usr/local/bin/sbcl"))
 (require 'slime-autoloads)
 (slime-setup '(slime-repl))
+
+;; Wikipedia mode
+(autoload 'wikipedia-mode "wikipedia-mode.el"
+  "Major mode for editing documents in wikipedia markup." t)
+(add-to-list 'auto-mode-alist '("\\.wiki\\'" . wikipedia-mode))
+(add-to-list 'auto-mode-alist '("index.\\.*" . wikipedia-mode)) ; for use with ViewSourceWith plugin
+(autoload 'longlines-mode "longlines.el"
+  "Minor mode for editing long lines." t)
+
+;; Jabber
+(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.1")
+(require 'jabber)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
@@ -631,4 +649,3 @@ directory, select directory. Lastly the file is opened."
    '(ac-source-yasnippet
      ac-source-words-in-buffer
      ac-source-dabbrev)))
-

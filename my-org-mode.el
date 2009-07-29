@@ -36,7 +36,7 @@
 ;; ToDo keywords
 (setq org-use-fast-todo-selection t)
 
-(setq org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
+(setq org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!)")
                           (sequence "WAITING(f@/!)" "SOMEDAY(S!)" "PROJECT(p@)")))
 
 (setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
@@ -212,8 +212,10 @@
 (setq org-agenda-time-grid '(nil "----------------"
                                  (800 1000 1200 1400 1600 1800 2000)))
 
-; Enable task blocking
+; Enable task and checklist blocking
 (setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-checkbox-dependencies t)
+(setq org-agenda-dim-blocked-tasks t)
 
 ; Hide leading stars
 (setq org-hide-leading-stars t)
@@ -245,7 +247,7 @@
 
 ;; Logging
 (setq org-log-done 'time)
-(setq org-log-into-drawer nil)
+(setq org-log-into-drawer t)
 
 ;; Make moving between links in an org-mode buffer easier
 (add-hook 'org-load-hook
