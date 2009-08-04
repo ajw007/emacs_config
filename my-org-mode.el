@@ -87,6 +87,9 @@
   %a" nil bottom nil)
                                ("note" ?n "* %?                                        :NOTE:
   %u
+  %a" nil bottom nil)
+                               ("someday" ?s "* SOMEDAY %?                             :WAITING:
+  %u
   %a" nil bottom nil)))
 
 ; Use IDO for target completion
@@ -240,7 +243,7 @@
 (setq org-yank-adjusted-subtrees t)
 
 ; Deadline warning
-(setq org-deadline-warning-days 30)
+(setq org-deadline-warning-days 10)
 
 ; Export settings
 (setq org-table-export-default-format "orgtbl-to-csv")

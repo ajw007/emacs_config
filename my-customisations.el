@@ -146,46 +146,62 @@
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
+;; Inject stumpwm configuration from emacs
 (require 'stumpwm-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;
 ;; Python mode
-(add-to-list 'load-path "~/elisp/python-mode-1.0")
+;;
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (set (make-variable-buffer-local 'beginning-of-defun-function)
-                 'py-beginning-of-def-or-class)
-            (setq outline-regexp "def\\|class ")))
-
-(setq ipython-command "/usr/local/bin/ipython")
+; fix tab completion in the ipython buffer
+(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
 
+;; Configure python completion:
+;;
+;; 1. code completion hitting <TAB> (or <C-M-i>) key:
+;;    e.g.:
+;;    time.cl<TAB> -> time.clock
+;;    time.<TAB> -> list of possible choices
+;; 2. description of the element (function/module/class/keyword) at the point hitting <F1> key
+;; 3. hitting '(' and ',' shows funtion signature
+;;    e.g.:
+;;    time.strftime( -> strftime(format[, tuple]) -> string
+;; 4. <F2> getting signature of a given function name
+;; 5. <F3> getting description of a given element name
+(require 'pycomplete)
+(autoload 'pymacs-load "pymacs" nil t)
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+
+;;
 ;; CC Mode
+;;
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (setq c-basic-offset 4)
 (setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
 (setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
 (setq c-offsets-alist '((case-label . 0) (arglist-close . 0) (innamespace . 0)))
 
+;;
 ;; html-helper mode
+;;
 (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
 (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . html-helper-mode) auto-mode-alist))
 
-;; Haskell mode
-(load "~/elisp/haskell-mode/haskell-site-file")
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-
+;;
 ;; Winring configuration
+;;
 (require 'winring)
 (setq winring-show-names t)
 (setq winring-prompt-on-create 'nil)
@@ -194,11 +210,13 @@
 (winring-new-configuration)
 (winring-prev-configuration)
 
+;;
 ;; ERC (IRC client)
+;;
 (require 'erc)
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs")))
+      '((".*\\.freenode.net" "#emacs" "#ubuntu")))
 (erc-track-mode t)
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
@@ -213,16 +231,30 @@
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
 
+(global-set-key (kbd "<f6>")            'djcb-erc-start-or-switch)
+
+(load "~/.ercpass")
+(require 'erc-services)
+(erc-services-mode 1)
+(setq erc-prompt-for-nickserv-password nil)
+(setq erc-nickserv-passwords
+      `((freenode (("dic3m4n" . ,freenode-diceman-pass)))))
+
+;;
 ;; Org mode setup
+;;
 (load-file "~/elisp/my-org-mode.el")
 
+;;
 ;; SLIME mode
+;;
 (add-to-list 'load-path "~/src/slime/")
 (if darwinp 
     (setq inferior-lisp-program "/opt/local/bin/sbcl")
   (setq inferior-lisp-program "/usr/local/bin/sbcl"))
 (require 'slime-autoloads)
-(slime-setup '(slime-repl))
+;(slime-setup '(slime-repl))
+(slime-setup)
 
 ;; Wikipedia mode
 (autoload 'wikipedia-mode "wikipedia-mode.el"
@@ -233,7 +265,7 @@
   "Minor mode for editing long lines." t)
 
 ;; Jabber
-(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.1")
+(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
 (require 'jabber)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -564,7 +596,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-c\C-a"         	'align)
-(global-set-key "\C-x\C-a"         	'align-regexp)
+;(global-set-key "\C-x\C-a"         	'align-regexp)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
@@ -649,3 +681,10 @@ directory, select directory. Lastly the file is opened."
    '(ac-source-yasnippet
      ac-source-words-in-buffer
      ac-source-dabbrev)))
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family "Inconsolata")))))
