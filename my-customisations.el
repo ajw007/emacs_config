@@ -37,6 +37,12 @@
 (setq compilation-scroll-output 'first-error)
 (setq compilation-window-height 10)
 
+;; Make scrolling less jumpy
+(setq
+  scroll-margin 0                  
+  scroll-conservatively 100000
+  scroll-preserve-screen-position 1)
+
 ;; Make text mode the default
 (setq default-major-mode 'text-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -146,8 +152,9 @@
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
-;; Inject stumpwm configuration from emacs
-(require 'stumpwm-mode)
+;; Jabber
+(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
+(require 'jabber)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
@@ -177,11 +184,11 @@
 ;;    time.strftime( -> strftime(format[, tuple]) -> string
 ;; 4. <F2> getting signature of a given function name
 ;; 5. <F3> getting description of a given element name
-(require 'pycomplete)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
+;; (require 'pycomplete)
+;; (autoload 'pymacs-load "pymacs" nil t)
+;; (autoload 'pymacs-eval "pymacs" nil t)
+;; (autoload 'pymacs-apply "pymacs")
+;; (autoload 'pymacs-call "pymacs")
 
 ;;
 ;; CC Mode
@@ -211,36 +218,6 @@
 (winring-prev-configuration)
 
 ;;
-;; ERC (IRC client)
-;;
-(require 'erc)
-(erc-autojoin-mode t)
-(setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs" "#ubuntu")))
-(erc-track-mode t)
-(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                "324" "329" "332" "333" "353" "477"))
-;; don't show any of this
-(setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
-
-(defun djcb-erc-start-or-switch ()
-  "Connect to ERC, or switch to last active buffer"
-  (interactive)
-  (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
-      (erc-track-switch-buffer 1) ;; yes: switch to last active
-    (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
-      (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
-
-(global-set-key (kbd "<f6>")            'djcb-erc-start-or-switch)
-
-(load "~/.ercpass")
-(require 'erc-services)
-(erc-services-mode 1)
-(setq erc-prompt-for-nickserv-password nil)
-(setq erc-nickserv-passwords
-      `((freenode (("dic3m4n" . ,freenode-diceman-pass)))))
-
-;;
 ;; Org mode setup
 ;;
 (load-file "~/elisp/my-org-mode.el")
@@ -248,13 +225,13 @@
 ;;
 ;; SLIME mode
 ;;
-(add-to-list 'load-path "~/src/slime/")
-(if darwinp 
-    (setq inferior-lisp-program "/opt/local/bin/sbcl")
-  (setq inferior-lisp-program "/usr/local/bin/sbcl"))
-(require 'slime-autoloads)
-;(slime-setup '(slime-repl))
-(slime-setup)
+;; (add-to-list 'load-path "~/src/slime/")
+;; (if darwinp 
+;;     (setq inferior-lisp-program "/opt/local/bin/sbcl")
+;;   (setq inferior-lisp-program "/usr/local/bin/sbcl"))
+;; (require 'slime-autoloads)
+;; ;(slime-setup '(slime-repl))
+;; (slime-setup)
 
 ;; Wikipedia mode
 (autoload 'wikipedia-mode "wikipedia-mode.el"
@@ -263,10 +240,6 @@
 (add-to-list 'auto-mode-alist '("index.\\.*" . wikipedia-mode)) ; for use with ViewSourceWith plugin
 (autoload 'longlines-mode "longlines.el"
   "Minor mode for editing long lines." t)
-
-;; Jabber
-(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
-(require 'jabber)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
