@@ -165,24 +165,6 @@
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
 
-;; Configure python completion:
-;;
-;; 1. code completion hitting <TAB> (or <C-M-i>) key:
-;;    e.g.:
-;;    time.cl<TAB> -> time.clock
-;;    time.<TAB> -> list of possible choices
-;; 2. description of the element (function/module/class/keyword) at the point hitting <F1> key
-;; 3. hitting '(' and ',' shows funtion signature
-;;    e.g.:
-;;    time.strftime( -> strftime(format[, tuple]) -> string
-;; 4. <F2> getting signature of a given function name
-;; 5. <F3> getting description of a given element name
-;(require 'pycomplete)
-;(autoload 'pymacs-load "pymacs" nil t)
-;(autoload 'pymacs-eval "pymacs" nil t)
-;(autoload 'pymacs-apply "pymacs")
-;(autoload 'pymacs-call "pymacs")
-
 ;;
 ;; CC Mode
 ;;
@@ -224,8 +206,15 @@
   "Minor mode for editing long lines." t)
 
 ;; Jabber
-;(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
-;(require 'jabber)
+(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
+(require 'jabber)
+
+;; Haskell mode
+(load "~/elisp/haskell-mode/haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
@@ -570,6 +559,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-c\C-r"         	'revert-buffer)
 (global-set-key "\C-cs"         	'svn-status)
 (global-set-key "\C-cw"         	'swap-windows)
+(global-set-key "\C-c\C-y"         	'haskell-hayoo)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
 (global-set-key [(control r)]   	'isearch-backward-regexp)
