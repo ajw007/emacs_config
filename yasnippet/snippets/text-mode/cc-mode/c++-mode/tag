@@ -1,0 +1,6 @@
+#name : XML Tag
+# --
+{
+    XMLGen::Tag ${1:tagName}(${2:xml}, "${3:TagName}"); 
+    $0
+}
