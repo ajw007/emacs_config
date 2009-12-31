@@ -10,14 +10,13 @@
 
 ;; Key bindings
 (global-set-key "\C-cl" 	'org-store-link)
-(global-set-key "\C-ca" 	'org-agenda)
 (global-set-key "\C-cb" 	'org-iswitchb)
 (global-set-key "\C-ct"         'org-todo)
 (global-set-key [(f1)]          'org-agenda)
-(global-set-key (kbd "<f2>")	'org-clock-goto)
-(global-set-key (kbd "C-<f2>")  'org-clock-in)
-(global-set-key (kbd "<f3>")    'org-narrow-to-subtree)
-(global-set-key (kbd "<S-f3>")  'widen)
+(global-set-key (kbd "<f5>")	'org-clock-goto)
+(global-set-key (kbd "C-<f5>")  'org-clock-in)
+(global-set-key (kbd "<f6>")    'org-narrow-to-subtree)
+(global-set-key (kbd "<S-f6>")  'widen)
 
 ;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
 (add-hook 'org-mode-hook
@@ -109,8 +108,9 @@
       '(("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
         ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
         ("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
-        ("w" "Work Tasks" tags-todo "@work-WAITING|@london" nil)
-        ("h" "Home Tasks" tags-todo "@home-WAITING|@grantham" nil)
+        ("w" "Work Tasks" tags-todo "@work-WAITING|@london|@online" nil)
+        ("h" "Home Tasks" tags-todo "@home-WAITING|@grantham|@online" nil)
+        ("o" "Online Tasks" tags-todo "@online" nil)
         ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
         ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
         ("N" "Notes" tags "NOTE" nil)))
@@ -144,6 +144,7 @@
 (setq org-tag-alist '((:startgroup)
                       ("@work" . ?w)
                       ("@home" . ?h)
+                      ("@online" . ?o)
                       ("@grantham" . ?g)
                       ("@london" . ?l)
                       (:endgroup)
@@ -182,7 +183,7 @@
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 
 ; Keep tasks with dates off the global todo lists
-(setq org-agenda-todo-ignore-with-date t)
+;(setq org-agenda-todo-ignore-with-date t)
 
 ; Remove completed deadline tasks from the agenda view
 (setq org-agenda-skip-deadline-if-done t)
@@ -208,8 +209,8 @@
         (todo priority-down)
         (tags priority-down)))
 
-; Start the weekly agenda today
-(setq org-agenda-start-on-weekday nil)
+; Start the weekly agenda on a Monday
+(setq org-agenda-start-on-weekday 1)
 
 ; Disable display of the time grid
 (setq org-agenda-time-grid '(nil "----------------"
@@ -261,4 +262,4 @@
 ;; Setup some link abbrevs for easier typing
 (setq org-link-abbrev-alist
       '(("bug" . "http://bugzilla/show_bug.cgi?id=")
-        ("google"   . "http://www.google.com/search?q=")))
+        ("goo"   . "http://www.google.com/search?q=")))
