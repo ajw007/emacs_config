@@ -241,6 +241,13 @@
 (autoload 'longlines-mode "longlines.el"
   "Minor mode for editing long lines." t)
 
+;; Haskell mode
+(load-library "~/elisp/haskellmode-emacs/haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -584,6 +591,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-c\C-r"         	'revert-buffer)
 (global-set-key "\C-cs"         	'svn-status)
 (global-set-key "\C-cw"         	'swap-windows)
+(global-set-key "\C-c\C-y"         	'haskell-hayoo)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
 (global-set-key [(control r)]   	'isearch-backward-regexp)
