@@ -156,6 +156,12 @@
 (add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
 (require 'jabber)
 
+;; GNUS
+(require 'gnus)
+;; use notification, rememember to add (modeline-notify t) to the
+;; group parameter (G p from *Group* buffer)
+(require 'gnus-notify) 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -610,7 +616,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
-(global-set-key (kbd "<f5>")            'visit-ansi-term)
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
