@@ -37,6 +37,12 @@
 (setq compilation-scroll-output 'first-error)
 (setq compilation-window-height 10)
 
+;; Make scrolling less jumpy
+(setq
+  scroll-margin 0                  
+  scroll-conservatively 100000
+  scroll-preserve-screen-position 1)
+
 ;; Make text mode the default
 (setq default-major-mode 'text-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -149,6 +155,16 @@
 ;; Turn on breadcrumbs
 (require 'breadcrumb)
 
+;; Jabber
+(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
+(require 'jabber)
+
+;; GNUS
+(require 'gnus)
+;; use notification, rememember to add (modeline-notify t) to the
+;; group parameter (G p from *Group* buffer)
+(require 'gnus-notify) 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -205,12 +221,8 @@
 (autoload 'longlines-mode "longlines.el"
   "Minor mode for editing long lines." t)
 
-;; Jabber
-(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
-(require 'jabber)
-
 ;; Haskell mode
-(load "~/elisp/haskell-mode/haskell-site-file")
+(load-library "~/elisp/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
@@ -578,7 +590,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
-(global-set-key (kbd "<f5>")            'visit-ansi-term)
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
