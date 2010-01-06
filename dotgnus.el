@@ -3,6 +3,15 @@
 ;; Use NNIR for searching
 (require 'nnir)
 
+;; This marks mail I send as read.
+(setq gnus-gcc-mark-as-read t)
+
+;; Wrap at 80 cols.
+(add-hook 'message-mode-hook
+	'(lambda()
+		(turn-on-auto-fill)
+		(setq fill-column 80)))
+
 ; Since I use gnus primarily for mail and not for reading News, I
 ; make my IMAP setting the default method for gnus.
 (setq gnus-select-method '(nnimap "bats"
@@ -94,3 +103,10 @@
 ;; Schedule update
 (gnus-demon-add-handler 'gnus-demon-scan-news 2 t)
 (gnus-demon-init)
+
+;; BBDB
+(add-to-list 'load-path "~/elisp/bbdb/lisp")
+(require 'bbdb)
+(bbdb-initialize)
+(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+

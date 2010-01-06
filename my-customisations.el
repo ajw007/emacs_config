@@ -594,10 +594,10 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "<M-next>")  	'next-error)
 
 ;; Breadcrumb bindings
-(global-set-key [(control f6)]          'bc-set)
-(global-set-key [(f6)]                  'bc-previous)
-(global-set-key [(shift f6)]            'bc-next)
-(global-set-key [(meta f6)]             'bc-list)
+(global-set-key [(control f3)]          'bc-set)
+(global-set-key [(f3)]                  'bc-previous)
+(global-set-key [(shift f3)]            'bc-next)
+(global-set-key [(meta f3)]             'bc-list)
 
 ;;; WINDOW SPLITING
 (global-set-key (kbd "M-5") 		'query-replace)
