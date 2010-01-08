@@ -1,6 +1,11 @@
 ; -*- Lisp -*-
 
+;; Use notification, rememember to add (modeline-notify t) to the
+;; group parameter (G p from *Group* buffer)
+(require 'gnus-notify) 
+
 ;; Use NNIR for searching
+;;(load-file "~/elisp/imap.el")
 (require 'nnir)
 
 ;; This marks mail I send as read.
@@ -37,6 +42,7 @@
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
         smtpmail-local-domain nil
+        user-mail-address "maburrow@googlemail.com"
         gnus-message-archive-group '("nnimap+gmail:Sent Messages")
         message-signature-file "~/.signature"))
 
@@ -45,15 +51,15 @@
           (function (lambda ()
                       (cond ((string-match "^INBOX.*" gnus-newsgroup-name)
                              ;; Send through BATS SMTP
-                             (setq smtpmail-smtp-service 25)
-                             (setq send-mail-function 'smtpmail-send-it)
-                             (setq message-send-mail-function 'smtpmail-send-it)
-                             (setq smtpmail-default-smtp-server "ukmail.batstrading.com")
-                             (setq smtpmail-smtp-server "ukmail.batstrading.com")
-                             (setq smtpmail-auth-credentials (expand-file-name "~/.authinfo"))
-                             (setq user-mail-address "mburrows@batstrading.com")
-                             (setq gnus-message-archive-group '("nnimap+bats:Sent Items"))
-                             (setq message-signature-file "~/.bats-signature"))
+                             (setq smtpmail-smtp-service 25
+                                   send-mail-function 'smtpmail-send-it
+                                   message-send-mail-function 'smtpmail-send-it
+                                   smtpmail-default-smtp-server "ukmail.batstrading.com"
+                                   smtpmail-smtp-server "ukmail.batstrading.com"
+                                   smtpmail-auth-credentials (expand-file-name "~/.authinfo")
+                                   user-mail-address "mburrows@batstrading.com"
+                                   gnus-message-archive-group '("nnimap+bats:Sent Items")
+                                   message-signature-file "~/.bats-signature"))
                             (t
                              ;; Default to Gmail SMTP
                              (gmail-send-default))))))
@@ -76,16 +82,16 @@
 ;; several replies or is part of a thread, only show the first
 ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
 ;; look at 'In-Reply-To:' and 'References:' headers.
-(setq gnus-thread-hide-subtree t)
+;;(setq gnus-thread-hide-subtree t)
 (setq gnus-thread-ignore-subject t)
 
 ;; Setup mail filter rules
-(setq nnimap-split-inbox "nnimap+gmail:INBOX")
+(setq nnimap-split-inbox "INBOX")
 (setq nnimap-split-predicate "UNDELETED")
 (setq nnimap-split-rule
       '(
         ("INBOX.linkedin" "^From:.*@linkedin.com")
-        )) 
+       )) 
 
 ;; Setup adaptive scoring
 (setq gnus-use-adaptive-scoring t)
@@ -101,7 +107,7 @@
 (setq gnus-thread-sort-functions `(gnus-thread-sort-by-score))
 
 ;; Schedule update
-(gnus-demon-add-handler 'gnus-demon-scan-news 2 t)
+(gnus-demon-add-handler 'gnus-demon-scan-news 2 t) ;; every 2 minutes
 (gnus-demon-init)
 
 ;; BBDB
@@ -109,4 +115,17 @@
 (require 'bbdb)
 (bbdb-initialize)
 (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(setq 
+    bbdb-offer-save 1                        ;; 1 means save-without-asking
+    bbdb-pop-up-target-lines 1               ;; very small
+    bbdb-canonicalize-redundant-nets-p t     ;; x@foo.bar.cx => x@bar.cx
+    bbdb-complete-name-allow-cycling t       ;; cycle through matches (this only works partially)
+    bbbd-message-caching-enabled t           ;; be fast
+    bbdb-north-american-phone-numbers-p nil  ;; allow entry of non-American format tel numbers
+    bbdb-auto-revert-p t                     ;; reload .bbdb file if it has changed on disk
+
+    ;; auto-create addresses from BATS people
+    bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook
+    bbdb-ignore-most-messages-alist (quote (("From" . "@.*batstrading.com")))
+)
 
