@@ -32,6 +32,7 @@
 (setq save-place t)
 (setq fill-column 100)
 (column-number-mode)
+(setq gdb-create-source-file-list nil)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
@@ -59,7 +60,7 @@
                                          try-complete-lisp-symbol))
 
 ;; We like line numbers, so lets have them everywhere
-(unless darwinp (global-linum-mode t))
+;;(unless darwinp (global-linum-mode t))
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -103,8 +104,7 @@
 ;; GIT integration
 (require 'magit)
 
-;; Eliminate multiple buffers when browsing a directory (very
-;; annoying)
+;; Eliminate multiple buffers when browsing a directory (very annoying)
 (require 'dired-single)
 
 (defun my-dired-init ()
@@ -152,18 +152,12 @@
 ;; Make buffer list perty
 (defalias 'list-buffers 'ibuffer)
 
-;; Turn on breadcrumbs
-(require 'breadcrumb)
-
 ;; Jabber
 (add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
 (require 'jabber)
 
-;; GNUS
-(require 'gnus)
-;; use notification, rememember to add (modeline-notify t) to the
-;; group parameter (G p from *Group* buffer)
-(require 'gnus-notify) 
+;; Enable breadcrumbs
+(require 'breadcrumb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
@@ -188,7 +182,7 @@
 (setq c-basic-offset 4)
 (setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
 (setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
-(setq c-offsets-alist '((case-label . 0) (arglist-close . 0) (innamespace . 0)))
+(setq c-offsets-alist '((case-label . 1) (arglist-close . 0) (innamespace . 0)))
 
 ;;
 ;; html-helper mode
@@ -209,11 +203,53 @@
 (winring-prev-configuration)
 
 ;;
+;; ERC (IRC client)
+;;
+;; (require 'erc)
+;; (erc-autojoin-mode t)
+;; (setq erc-autojoin-channels-alist
+;;       '((".*\\.freenode.net" "#emacs" "#stumpwm" "#python")))
+;; (erc-track-mode t)
+;; (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+;;                                 "324" "329" "332" "333" "353" "477"))
+;; ;; don't show any of this
+;; (setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+
+;; (defun djcb-erc-start-or-switch ()
+;;   "Connect to ERC, or switch to last active buffer"
+;;   (interactive)
+;;   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
+;;       (erc-track-switch-buffer 1) ;; yes: switch to last active
+;;     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
+;;       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n"))))
+
+;; (global-set-key (kbd "<f6>")            'djcb-erc-start-or-switch)
+
+;; (load "~/.ercpass")
+;; (require 'erc-services)
+;; (erc-services-mode 1)
+;; (setq erc-prompt-for-nickserv-password nil)
+;; (setq erc-nickserv-passwords
+;;       `((freenode (("dic3m4n_" . ,freenode-diceman-pass)))))
+
+;;
+;; SLIME mode
+;;
+;; (add-to-list 'load-path "~/src/slime/")
+;; (if darwinp 
+;;     (setq inferior-lisp-program "/opt/local/bin/sbcl")
+;;   (setq inferior-lisp-program "/usr/local/bin/sbcl"))
+;; (require 'slime-autoloads)
+;; (slime-setup '(slime-repl))
+
+;;
 ;; Org mode setup
 ;;
 (load-file "~/elisp/my-org-mode.el")
 
+;;
 ;; Wikipedia mode
+;;
 (autoload 'wikipedia-mode "wikipedia-mode.el"
   "Major mode for editing documents in wikipedia markup." t)
 (add-to-list 'auto-mode-alist '("\\.wiki\\'" . wikipedia-mode))
@@ -221,12 +257,16 @@
 (autoload 'longlines-mode "longlines.el"
   "Minor mode for editing long lines." t)
 
+;;
 ;; Haskell mode
+;;
 (load-library "~/elisp/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+
+;; Automatically expand member functions from header definitions
+(autoload 'expand-member-functions "member-functions" "Expand C++ member function declarations" t)
+(add-hook 'c++-mode-hook (lambda () (local-set-key "\C-cm" #'expand-member-functions)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions                                                           
@@ -523,8 +563,22 @@ directory, select directory. Lastly the file is opened."
   (progn
     (call-interactively 'compile)
     (delete-other-windows)
-    (split-window-vertically 12)
+    (split-window-vertically 15)
     (switch-to-buffer "*compilation*")
+    (setq truncate-lines nil)
+    (other-window 1)
+    )
+  )
+
+(defun my-recompile ()
+  "Run compile and resize the compile window"
+  (interactive)
+  (progn
+    (call-interactively 'recompile)
+    (delete-other-windows)
+    (split-window-vertically 15)
+    (switch-to-buffer "*compilation*")
+    (setq truncate-lines nil)
     (other-window 1)
     )
   )
@@ -543,6 +597,15 @@ directory, select directory. Lastly the file is opened."
 ;; Specify my function (maybe I should have done a lambda function)
 (setq compilation-exit-message-function 'compilation-exit-autoclose)
 
+;;switch to gnus group buffer or start gnus
+(defun my-switch-to-gnus-group-buffer ()
+  "Switch to gnus group buffer if it exists, otherwise start gnus"
+  (interactive)
+  (if (or (not (fboundp 'gnus-alive-p))
+          (not (gnus-alive-p)))
+      (gnus)
+    (switch-to-buffer "*Group*")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global keybindings                                                         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -555,16 +618,17 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta ?!)]     	'custom-shell-command-on-region)
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
-(global-set-key "\C-c\C-a"         	'align)
-;(global-set-key "\C-x\C-a"         	'align-regexp)
+(global-set-key "\C-ca"         	'align)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
 (global-set-key "\C-cf"         	'file-cache-ido-find-file)
 (global-set-key "\C-ch"         	'list-matching-lines)
+(global-set-key "\C-c\C-h"         	'haskell-hayoo)
 (global-set-key "\C-ci"         	'magit-status)
 (global-set-key "\C-x\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-cm"         	'manual-entry)
+(global-set-key "\C-cn"         	'my-switch-to-gnus-group-buffer)
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
@@ -590,6 +654,10 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
+(global-set-key (kbd "<f2>")            'my-recompile)
+(global-set-key (kbd "<f6>")            'gud-next)
+(global-set-key (kbd "<f7>")            'gud-step)
+(global-set-key (kbd "<f8>")            'gud-finish)
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
@@ -607,6 +675,12 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-0") 		'delete-window)
 (global-set-key (kbd "M-o") 		'other-window)
 
+;; Setup breadcrumb bindings
+(global-set-key [(control f3)]          'bc-set)
+(global-set-key [(f3)]                  'bc-previous)
+(global-set-key [(shift f3)]            'bc-next)
+(global-set-key [(meta f3)]             'bc-list)
+
 ;; Anything config
 
 (require 'anything-config)
@@ -622,7 +696,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-info-pages
              anything-c-source-man-pages
              anything-c-source-calculation-result
-             anything-c-source-google-suggest
+             ;anything-c-source-google-suggest
              anything-c-source-locate
              anything-c-source-emacs-commands))
 
@@ -648,9 +722,12 @@ directory, select directory. Lastly the file is opened."
      ac-source-words-in-buffer
      ac-source-dabbrev)))
 
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "unknown" :family "Inconsolata")))))
+; Make Emacs ask me if I want to exit. I have a tendency to hit C-x
+; C-c by accident sometimes. When I'm on a machine without this and
+; I'm using Emacs, I end up cursing myself.
+(global-set-key "\C-x\C-c"
+                (lambda () (interactive)
+                  (if (string-equal "y" (read-string "Exit Emacs (y/n)? "))
+                      (save-buffers-kill-emacs))))
+
+(global-set-key [(control meta down-mouse-3)] 'imenu)

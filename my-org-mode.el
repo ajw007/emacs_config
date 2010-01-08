@@ -15,8 +15,8 @@
 (global-set-key [(f1)]          'org-agenda)
 (global-set-key (kbd "<f5>")	'org-clock-goto)
 (global-set-key (kbd "C-<f5>")  'org-clock-in)
-(global-set-key (kbd "<f6>")    'org-narrow-to-subtree)
-(global-set-key (kbd "<S-f6>")  'widen)
+(global-set-key (kbd "<f4>")    'org-narrow-to-subtree)
+(global-set-key (kbd "<S-f4>")  'widen)
 
 ;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
 (add-hook 'org-mode-hook
