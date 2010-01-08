@@ -159,6 +159,11 @@
 ;; Enable breadcrumbs
 (require 'breadcrumb)
 
+;; Provide a menu of tags when there's multiple matches
+(require 'etags-select)
+(global-set-key "\M-?" 'etags-select-find-tag-at-point)
+(global-set-key "\M-." 'etags-select-find-tag)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Language modes                                                             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -496,14 +501,6 @@ whatnot on a region."
 (defun file-cache-delete-svn ()
   (file-cache-delete-file-regexp ".*\\.svn.*"))
 
-(defun bats-file-cache ()
-  (interactive)
-  (file-cache-clear-cache)
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/cpp")
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/python")
-  (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
-  (file-cache-delete-svn))
-
 (defun file-cache-ido-find-file (file)
   "Using ido, interactively open file from file cache'.
 First select a file, matched using ido-switch-buffer against the contents
@@ -624,7 +621,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-ce"         	'eval-region)
 (global-set-key "\C-cf"         	'file-cache-ido-find-file)
 (global-set-key "\C-ch"         	'list-matching-lines)
-(global-set-key "\C-c\C-h"         	'haskell-hayoo)
 (global-set-key "\C-ci"         	'magit-status)
 (global-set-key "\C-x\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-cm"         	'manual-entry)
@@ -654,6 +650,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
+;; f1, f4 and f5 used by org-mode
 (global-set-key (kbd "<f2>")            'my-recompile)
 (global-set-key (kbd "<f6>")            'gud-next)
 (global-set-key (kbd "<f7>")            'gud-step)
@@ -674,12 +671,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-1") 		'delete-other-windows)
 (global-set-key (kbd "M-0") 		'delete-window)
 (global-set-key (kbd "M-o") 		'other-window)
-
-;; Setup breadcrumb bindings
-(global-set-key [(control f3)]          'bc-set)
-(global-set-key [(f3)]                  'bc-previous)
-(global-set-key [(shift f3)]            'bc-next)
-(global-set-key [(meta f3)]             'bc-list)
 
 ;; Anything config
 
@@ -731,3 +722,8 @@ directory, select directory. Lastly the file is opened."
                       (save-buffers-kill-emacs))))
 
 (global-set-key [(control meta down-mouse-3)] 'imenu)
+
+;; load host/site specific config if it exists
+(let ((site-lib "~/elisp/site.el"))
+  (message "loading site.el")
+  (if (file-exists-p site-lib) (load-file site-lib)))
