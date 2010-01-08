@@ -2,3 +2,4 @@
 *.elc
 *~
 nohup.out
+site.el
