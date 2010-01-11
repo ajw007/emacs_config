@@ -91,6 +91,7 @@
 (setq nnimap-split-rule
       '(
         ("INBOX.linkedin" "^From:.*@linkedin.com")
+        ("INBOX.org-mode" "^Subject:.*Orgmode")
        )) 
 
 ;; Setup adaptive scoring
