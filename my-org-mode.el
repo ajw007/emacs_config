@@ -108,7 +108,7 @@
       '(("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
         ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
         ("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
-        ("w" "Work Tasks" tags-todo "@work-WAITING|@london|@online" nil)
+        ("w" "Work Tasks" tags-todo "@work-WAITING|@london" nil)
         ("h" "Home Tasks" tags-todo "@home-WAITING|@grantham|@online" nil)
         ("o" "Online Tasks" tags-todo "@online" nil)
         ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
