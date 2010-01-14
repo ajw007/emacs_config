@@ -19,19 +19,20 @@
 
 ; Since I use gnus primarily for mail and not for reading News, I
 ; make my IMAP setting the default method for gnus.
-(setq gnus-select-method '(nnimap "bats"
-                                  (nnimap-address "batsukexch.bats.com")
-                                  (nnimap-stream network)
+(setq gnus-select-method '(nnimap "gmail"
+                                  (nnimap-address "imap.gmail.com")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)
                                   (nnimap-authinfo-file "~/.authinfo")
                                   (nnir-search-engine imap)))
-
-(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
-                                                     (nnimap-address "imap.gmail.com")
-                                                     (nnimap-server-port 993)
-                                                     (nnimap-stream ssl)
-                                                     (nnimap-authinfo-file "~/.authinfo")
-                                                     (nnir-search-engine imap)))
-
+(defun bats-mail ()
+  (interactive)
+  (add-to-list 'gnus-secondary-select-methods 
+               '(nnimap "bats"
+                        (nnimap-address "batsukexch.bats.com")
+                        (nnimap-stream network)
+                        (nnimap-authinfo-file "~/.authinfo")
+                        (nnir-search-engine imap))))
 
 ;; Put everything back to the default send method
 (defun gmail-send-default ()
@@ -91,6 +92,7 @@
 (setq nnimap-split-rule
       '(
         ("INBOX.linkedin" "^From:.*@linkedin.com")
+        ("INBOX.org-mode" "^Subject:.*Orgmode")
        )) 
 
 ;; Setup adaptive scoring
