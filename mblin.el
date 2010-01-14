@@ -16,3 +16,6 @@
                             ))
 
 (jabber-connect-all)
+
+(load-file "~/elisp/dotgnus.el")
+(bats-mail)

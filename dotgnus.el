@@ -50,7 +50,8 @@
 ;; Change the mail settings to send in different ways depending on group
 (add-hook 'gnus-select-group-hook
           (function (lambda ()
-                      (cond ((string-match "^INBOX.*" gnus-newsgroup-name)
+                      (message gnus-newsgroup-name)
+                      (cond ((string-match ".*bats.*" gnus-newsgroup-name)
                              ;; Send through BATS SMTP
                              (setq smtpmail-smtp-service 25
                                    send-mail-function 'smtpmail-send-it
