@@ -5,18 +5,51 @@
 ;;;    http://doc.norang.ca/org-mode.html
 ;;;
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-(require 'org-install)
+(load-file "~/elisp/org-mode/lisp/org-install.el") ; use latest dev version
+;;(require 'org-install)
 (require 'org-checklist)
 
+(defun bh/weekday-p ()
+  (let ((wday (nth 6 (decode-time))))
+    (and (< wday 6) (> wday 0))))
+
+(defun bh/working-p ()
+  (let ((hour (nth 2 (decode-time))))
+    (and (bh/weekday-p) (and (>= hour 8) (<= hour 18)))))
+
+(defun bh/network-p ()
+  (= 0 (call-process "/bin/ping" nil nil nil
+                     "-c1" "-q" "-t1" "www.google.com")))
+
+(defun bh/org-auto-exclude-function (tag)
+  (and (cond
+       ((string= tag "@home")
+        (bh/working-p))
+       ((string= tag "@work")
+        (not (bh/working-p))))
+       (concat "-" tag)))
+
+(setq org-agenda-auto-exclude-function 'bh/org-auto-exclude-function)
+
 ;; Key bindings
-(global-set-key "\C-cl" 	'org-store-link)
-(global-set-key "\C-cb" 	'org-iswitchb)
-(global-set-key "\C-ct"         'org-todo)
-(global-set-key [(f1)]          'org-agenda)
-(global-set-key (kbd "<f5>")	'org-clock-goto)
-(global-set-key (kbd "C-<f5>")  'org-clock-in)
-(global-set-key (kbd "<f4>")    'org-narrow-to-subtree)
-(global-set-key (kbd "<S-f4>")  'widen)
+(global-set-key "\C-cl" 	 'org-store-link)
+(global-set-key "\C-cb" 	 'org-iswitchb)
+(global-set-key "\C-ct"          'org-todo)
+(global-set-key (kbd "<f9> b")   'bbdb)
+(global-set-key (kbd "<f9> c")   'calendar)
+(global-set-key (kbd "<f9> g")   'gnus)
+(global-set-key (kbd "<f9> m")   'bh/clock-in-read-mail-and-news-task)
+(global-set-key (kbd "<f9> o")   'bh/clock-in-organization-task)
+(global-set-key (kbd "<f9> SPC") 'bh/clock-in-interrupted-task)
+(global-set-key (kbd "<f9> n")   'org-narrow-to-subtree)
+(global-set-key (kbd "<f9> w")   'widen)
+(global-set-key (kbd "<f9> I")   'org-clock-in)
+(global-set-key (kbd "<f9> O")   'org-clock-out)
+(global-set-key (kbd "<f10>")    'org-cycle-agenda-files)
+(global-set-key [(f11)]	         'org-clock-goto)
+(global-set-key (kbd "C-<f11>")  'org-clock-in)
+(global-set-key (kbd "M-<f11>")  'org-resolve-clocks)
+(global-set-key [(f12)]          'org-agenda)
 
 ;; Make TAB the yas trigger key in the org-mode-hook and turn on flyspell mode
 (add-hook 'org-mode-hook
@@ -57,6 +90,7 @@
 (require 'remember)
 (org-remember-insinuate)
 (setq org-default-notes-file "~/Dropbox/org/refile.org")
+(global-set-key (kbd "C-M-r") 'org-remember)
 
 ; Start clock if a remember buffer includes :CLOCK-IN:
 (add-hook 'remember-mode-hook 'my-start-clock-if-needed 'append)
@@ -67,9 +101,6 @@
     (when (re-search-forward " *:CLOCK-IN: *" nil t)
       (replace-match "")
       (org-clock-in))))
-
-; I use C-M-r to start org-remember
-(global-set-key (kbd "C-M-r")   'org-remember)
 
 ; Keep clocks running
 (setq org-remember-clock-out-on-exit nil)
@@ -103,6 +134,9 @@
 ; Targets complete in steps so we start with filename, TAB shows the next level of targets etc 
 (setq org-outline-path-complete-in-steps t)
 
+; Allow refile to create parent tasks with confirmation
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+
 ;; Custom agenda views
 (setq org-agenda-custom-commands 
       '(("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
@@ -113,6 +147,7 @@
         ("o" "Online Tasks" tags-todo "@online" nil)
         ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
         ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
+        ("A" "Tasks to be Archived" todo "DONE" nil)
         ("N" "Notes" tags "NOTE" nil)))
 
 ; Resume clocking tasks when emacs is restarted
@@ -123,14 +158,17 @@
 (setq org-clock-in-resume t)
 ; Change task state to STARTED when clocking in
 (setq org-clock-in-switch-to-state "STARTED")
-; Save clock data and notes in the LOGBOOK drawer
-(setq org-clock-into-drawer t)
+;; Separate drawers for clocking and logs
+(setq org-drawers (quote ("PROPERTIES" "LOGBOOK" "CLOCK")))
+;; Save clock data in the CLOCK drawer and state changes and notes in the LOGBOOK drawer
+(setq org-clock-into-drawer "CLOCK")
 ; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
 (setq org-clock-out-remove-zero-time-clocks t)
-; Don't clock out when moving task to a done state
-(setq org-clock-out-when-done nil)
 ; Save the running clock and all clock history when exiting Emacs, load it on startup
 (setq org-clock-persist t)
+;; Disable auto clock resolution, use M-F11 instead
+(setq org-clock-auto-clock-resolution nil)
+
 ; Round to 5 minutes
 (setq org-time-stamp-rounding-minutes '(1 5))
 ; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration

@@ -220,6 +220,7 @@
 ;;
 ;; Org mode setup
 ;;
+(add-to-list 'load-path "~/elisp/org-mode/lisp")
 (load-file "~/elisp/my-org-mode.el")
 
 ;;
