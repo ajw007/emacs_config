@@ -33,6 +33,7 @@
 (setq fill-column 100)
 (column-number-mode)
 (setq gdb-create-source-file-list nil)
+(setq global-auto-revert-mode t)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)

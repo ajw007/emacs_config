@@ -31,6 +31,32 @@
 
 (setq org-agenda-auto-exclude-function 'bh/org-auto-exclude-function)
 
+(defun bh/clock-in-task-by-id (id)
+  "Clock in a task by id"
+  (require 'org-id)
+  (save-restriction
+    (widen)
+    (org-with-point-at (org-id-find id 'marker)
+      (org-clock-in nil))))
+
+(defun bh/clock-in-organization-task ()
+  (interactive)
+  (bh/clock-in-task-by-id "8dbe9791-4e64-4f00-b825-f96fdc1f6533"))
+
+(defun bh/clock-in-read-mail-and-news-task ()
+  (interactive)
+  (bh/clock-in-task-by-id "a616fd4b-6b12-457d-a6bd-fbfa3558d60f"))
+
+(defun bh/clock-in-interrupted-task ()
+  "Clock in the interrupted task if there is one"
+  (interactive)
+  (if (and (not org-clock-resolving-clocks-due-to-idleness)
+           (marker-buffer org-clock-marker)
+           (marker-buffer org-clock-interrupted-task))
+      (org-with-point-at org-clock-interrupted-task
+        (org-clock-in nil))
+    (org-clock-out)))
+
 ;; Key bindings
 (global-set-key "\C-cl" 	 'org-store-link)
 (global-set-key "\C-cb" 	 'org-iswitchb)
@@ -69,7 +95,7 @@
 (setq org-use-fast-todo-selection t)
 
 (setq org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!)")
-                          (sequence "WAITING(f@/!)" "SOMEDAY(S!)" "PROJECT(p@)")))
+                          (sequence "WAITING(f@/!)" "SOMEDAY(S!)" "PROJECT(p)")))
 
 (setq org-todo-keyword-faces '(("TODO" :foreground "red" :weight bold)
                                ("STARTED" :foreground "light yellow" :weight bold)
@@ -82,8 +108,9 @@
 (setq org-todo-state-tags-triggers '(("WAITING" ("WAITING" . t) ("NEXT"))
                                      ("SOMEDAY" ("WAITING" . t))
                                      (done ("NEXT") ("WAITING"))
-                                     ("TODO" ("WAITING"))
-                                     ("STARTED" ("WAITING"))
+                                     ("TODO" ("WAITING") ("NEXT"))
+                                     ("STARTED" ("NEXT" . t) ("WAITING"))
+                                     ("DONE" ("WAITING") ("NEXT"))
                                      ("PROJECT" ("PROJECT" . t))))
 
 ;; Remember mode
@@ -142,9 +169,9 @@
       '(("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
         ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
         ("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
-        ("w" "Work Tasks" tags-todo "@work-WAITING|@london" nil)
-        ("h" "Home Tasks" tags-todo "@home-WAITING|@grantham|@online" nil)
-        ("o" "Online Tasks" tags-todo "@online" nil)
+        ("w" "Work Tasks" tags-todo "@work-WAITING|@errands-london" nil)
+        ("h" "Home Tasks" tags-todo "@home-WAITING|@errands-grantham|ONLINE" nil)
+        ("o" "Online Tasks" tags-todo "ONLINE" nil)
         ("f" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
         ("r" "Refile New Notes and Tasks" tags "REFILE" ((org-agenda-todo-ignore-with-date nil)))
         ("A" "Tasks to be Archived" todo "DONE" nil)
@@ -182,11 +209,12 @@
 (setq org-tag-alist '((:startgroup)
                       ("@work" . ?w)
                       ("@home" . ?h)
-                      ("@online" . ?o)
-                      ("@grantham" . ?g)
-                      ("@london" . ?l)
+                      ("@errands-grantham" . ?g)
+                      ("@errands-london" . ?l)
                       (:endgroup)
+                      ("ONLINE" . ?o)
                       ("NEXT" . ?n)
+                      ("NOTE" . ?N)
                       ("WAITING" . ?f)
                       ("PROJECT" . ?p)))
 
@@ -221,7 +249,7 @@
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 
 ; Keep tasks with dates off the global todo lists
-;(setq org-agenda-todo-ignore-with-date t)
+(setq org-agenda-todo-ignore-with-date t)
 
 ; Remove completed deadline tasks from the agenda view
 (setq org-agenda-skip-deadline-if-done t)
@@ -300,4 +328,7 @@
 ;; Setup some link abbrevs for easier typing
 (setq org-link-abbrev-alist
       '(("bug" . "http://bugzilla/show_bug.cgi?id=")
-        ("goo"   . "http://www.google.com/search?q=")))
+        ("goo" . "http://www.google.com/search?q=")))
+
+;; Use return key to follow links
+(setq org-return-follows-link t)

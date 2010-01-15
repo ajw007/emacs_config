@@ -25,6 +25,7 @@
                                   (nnimap-stream ssl)
                                   (nnimap-authinfo-file "~/.authinfo")
                                   (nnir-search-engine imap)))
+
 (defun bats-mail ()
   (interactive)
   (add-to-list 'gnus-secondary-select-methods 
