@@ -1,9 +1,4 @@
 ;;;; My emacs customisations                                                          
-
-(defconst darwinp
-  (eq system-type 'darwin)
-  "Are we running on a Mac system?")
-
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
@@ -57,9 +52,6 @@
                                          try-expand-dabbrev-from-kill 
                                          try-complete-lisp-symbol-partially 
                                          try-complete-lisp-symbol))
-
-;; We like line numbers, so lets have them everywhere
-;;(unless darwinp (global-linum-mode t))
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -588,6 +580,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "<f7>")            'gud-step)
 (global-set-key (kbd "<f8>")            'gud-finish)
 ; F9-F12 are taken by org-mode
+(global-set-key (kbd "<f5>")            'slime-selector)
 
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
