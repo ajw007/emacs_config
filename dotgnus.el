@@ -111,7 +111,7 @@
 (setq gnus-thread-sort-functions `(gnus-thread-sort-by-score))
 
 ;; Schedule update
-(gnus-demon-add-handler 'gnus-demon-scan-news 2 t) ;; every 2 minutes
+(gnus-demon-add-handler 'gnus-demon-scan-news 15 t) ;; every 15 minutes
 (gnus-demon-init)
 
 ;; BBDB
