@@ -25,7 +25,6 @@
 (delete-selection-mode t)
 (setq case-fold-search t)
 (setq truncate-lines 1)
-(blink-cursor-mode 0)
 (setq scroll-bar-mode 'right)
 (display-time-mode t)
 (setq-default indent-tabs-mode nil)
@@ -43,6 +42,9 @@
   scroll-margin 0                  
   scroll-conservatively 100000
   scroll-preserve-screen-position 1)
+
+(require 'bar-cursor)
+(bar-cursor-mode)
 
 ;; Make text mode the default
 (setq default-major-mode 'text-mode)
@@ -176,6 +178,7 @@
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
 ; fix tab completion in the ipython buffer
+(setq ipython-command "/usr/bin/ipython")
 (setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
@@ -221,7 +224,7 @@
 ;; Org mode setup
 ;;
 (add-to-list 'load-path "~/elisp/org-mode/lisp")
-(load-file "~/elisp/my-org-mode.el")
+;;(load-file "~/elisp/my-org-mode.el")
 
 ;;
 ;; Wikipedia mode
@@ -293,27 +296,35 @@
            (set-window-start w1 s2)
            (set-window-start w2 s1)))))
 
-(defun move-line (&optional n)
-  "Move current line N (1) lines up/down leaving point in place."
-  (interactive "p")
-  (when (null n)
-    (setq n 1))
-  (let ((col (current-column)))
-    (beginning-of-line)
-    (next-line 1)
-    (transpose-lines n)
-    (previous-line 1)
-    (forward-char col)))
 
+;; Move current line up or down with M-up or M-down
+(defun move-line (n)
+   "Move the current line up or down by N lines."
+   (interactive "p")
+   (let ((col (current-column))
+         start
+         end)
+     (beginning-of-line)
+     (setq start (point))
+     (end-of-line)
+     (forward-char)
+     (setq end (point))
+     (let ((line-text (delete-and-extract-region start end)))
+       (forward-line n)
+       (insert line-text)
+       ;; restore point to original column in moved line
+       (forward-line -1)
+       (forward-char col))))
+ 
 (defun move-line-up (n)
-  "Moves current line N (1) lines up leaving point in place."
-  (interactive "p")
-  (move-line (if (null n) -1 (- n))))
-
+   "Move the current line up by N lines."
+   (interactive "p")
+   (move-line (if (null n) -1 (- n))))
+ 
 (defun move-line-down (n)
-  "Moves current line N (1) lines down leaving point in place."
-  (interactive "p")
-  (move-line (if (null n) 1 n)))
+   "Move the current line down by N lines."
+   (interactive "p")
+   (move-line (if (null n) 1 n)))
 
 ;; Always end searches at the beginning of the matching expression.
 (add-hook 'isearch-mode-end-hook 'custom-goto-match-beginning)
@@ -452,8 +463,7 @@ whatnot on a region."
 (defun duplicate-line-up()
   "Duplicate line."
   (interactive)
-  (let (
-        (beg (line-beginning-position))
+  (let ((beg (line-beginning-position))
         (end (line-end-position)))
     (copy-region-as-kill beg end)
     (forward-line -1)
@@ -623,6 +633,7 @@ directory, select directory. Lastly the file is opened."
 
 ;; f1, f4 and f5 used by org-mode
 (global-set-key (kbd "<f2>")            'my-recompile)
+(global-set-key (kbd "<f5>")            'visit-ansi-term)
 (global-set-key (kbd "<f6>")            'gud-next)
 (global-set-key (kbd "<f7>")            'gud-step)
 (global-set-key (kbd "<f8>")            'gud-finish)

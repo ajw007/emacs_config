@@ -73,7 +73,7 @@
 (setq gnus-read-active-file 'some)
 
 ;; Tree view for groups.  I like the organisational feel this has.
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+;;(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ;; Threads!  I hate reading un-threaded email -- especially mailing
 ;; lists.  This helps a ton!
@@ -110,7 +110,7 @@
 (setq gnus-thread-sort-functions `(gnus-thread-sort-by-score))
 
 ;; Schedule update
-(gnus-demon-add-handler 'gnus-demon-scan-news 2 t) ;; every 2 minutes
+(gnus-demon-add-handler 'gnus-demon-scan-news 15 t) ;; every 15 minutes
 (gnus-demon-init)
 
 ;; BBDB
