@@ -15,7 +15,7 @@
 (add-hook 'message-mode-hook
 	'(lambda()
 		(turn-on-auto-fill)
-		(setq fill-column 80)))
+		(setq fill-column 70)))
 
 ; Since I use gnus primarily for mail and not for reading News, I
 ; make my IMAP setting the default method for gnus.
@@ -25,6 +25,7 @@
                                   (nnimap-stream ssl)
                                   (nnimap-authinfo-file "~/.authinfo")
                                   (nnir-search-engine imap)))
+
 (defun bats-mail ()
   (interactive)
   (add-to-list 'gnus-secondary-select-methods 

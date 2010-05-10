@@ -1,11 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; My emacs customisations                                                          
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defconst darwinp
-  (eq system-type 'darwin)
-  "Are we running on a Mac system?")
-
+;;;; My emacs customisations                                                          
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
@@ -32,6 +25,7 @@
 (setq fill-column 100)
 (column-number-mode)
 (setq gdb-create-source-file-list nil)
+(setq global-auto-revert-mode t)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
@@ -60,9 +54,6 @@
                                          try-expand-dabbrev-from-kill 
                                          try-complete-lisp-symbol-partially 
                                          try-complete-lisp-symbol))
-
-;; We like line numbers, so lets have them everywhere
-;;(unless darwinp (global-linum-mode t))
 
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
@@ -166,42 +157,32 @@
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 (global-set-key "\M-." 'etags-select-find-tag)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Language modes                                                             
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Language modes
 
-;;
 ;; Python mode
-;;
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-; fix tab completion in the ipython buffer
 (setq ipython-command "/usr/bin/ipython")
+;; Fix tab completion in the ipython buffer
 (setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
 
-;;
 ;; CC Mode
-;;
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 (setq c-basic-offset 4)
 (setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
 (setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
 (setq c-offsets-alist '((case-label . 1) (arglist-close . 0) (innamespace . 0)))
 
-;;
 ;; html-helper mode
-;;
 (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
 (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . html-helper-mode) auto-mode-alist))
 
-;;
 ;; Winring configuration
-;;
 (require 'winring)
 (setq winring-show-names t)
 (setq winring-prompt-on-create 'nil)
@@ -210,25 +191,11 @@
 (winring-new-configuration)
 (winring-prev-configuration)
 
-;;
-;; SLIME mode
-;;
-;; (add-to-list 'load-path "~/src/slime/")
-;; (if darwinp 
-;;     (setq inferior-lisp-program "/opt/local/bin/sbcl")
-;;   (setq inferior-lisp-program "/usr/local/bin/sbcl"))
-;; (require 'slime-autoloads)
-;; (slime-setup '(slime-repl))
-
-;;
 ;; Org mode setup
-;;
 (add-to-list 'load-path "~/elisp/org-mode/lisp")
 ;;(load-file "~/elisp/my-org-mode.el")
 
-;;
 ;; Wikipedia mode
-;;
 (autoload 'wikipedia-mode "wikipedia-mode.el"
   "Major mode for editing documents in wikipedia markup." t)
 (add-to-list 'auto-mode-alist '("\\.wiki\\'" . wikipedia-mode))
@@ -236,9 +203,7 @@
 (autoload 'longlines-mode "longlines.el"
   "Minor mode for editing long lines." t)
 
-;;
 ;; Haskell mode
-;;
 (load-library "~/elisp/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
@@ -247,9 +212,7 @@
 (autoload 'expand-member-functions "member-functions" "Expand C++ member function declarations" t)
 (add-hook 'c++-mode-hook (lambda () (local-set-key "\C-cm" #'expand-member-functions)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Useful functions                                                           
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Useful functions
 
 (defun dot-emacs ()
   "Visit .emacs"
@@ -333,13 +296,12 @@
   "Use with isearch hook to end search at first char of match."
   (when isearch-forward (goto-char isearch-other-end)))
 
-;; Many times you'll do a kill-line command with the only intention of
-;; getting the contents of the line into the killring. Here's an idea
-;; stolen from Slickedit, if you press copy or cut when no region is
-;; active you'll copy or cut the current line:
-
+;; Many times you'll do a kill-line command with the only intention of getting
+;; the contents of the line into the killring. Here's an idea stolen from
+;; Slickedit, if you press copy or cut when no region is active you'll copy or
+;; cut the current line:
 (defadvice kill-ring-save (before slickcopy activate compile)
-  "When called interactively with no active region, copy a single line instead."
+  "When called rinteractively with no active region, copy a single line instead."
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (line-beginning-position)
@@ -352,11 +314,10 @@
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 
-;; Most times you'll want to open a fresh line and move to it without
-;; breaking the current one even if the point is not at the end of the
-;; line. Let's copy how vi opens new lines and use it with C-o and use
-;; [return] for doing hard linebreaks:
-
+;; Most times you'll want to open a fresh line and move to it without breaking
+;; the current one even if the point is not at the end of the line. Let's copy
+;; how vi opens new lines and use it with C-o and use [return] for doing hard
+;; linebreaks:
 (defun vi-open-next-line (arg)
   "Move to the next line (like vi) and then opens a line."
   (interactive "p")
@@ -372,9 +333,8 @@
   (open-line arg)
   (indent-according-to-mode))
 
-;; Another cool vi feature, pressing % when on a left or right
-;; parenthese will jump to the matching parenthese:
-
+;; Another cool vi feature, pressing % when on a left or right parenthese will
+;; jump to the matching parenthese:
 (defun match-paren (arg)
   "Go to the matching parenthesis if on parenthesis otherwise insert %."
   (interactive "p")
@@ -382,11 +342,9 @@
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t (self-insert-command (or arg 1)))))
 
-;; A somewhat insanely powerful trick, evaluate a region via a shell
-;; command and replace the region with the resulting output. Normally
-;; you would access this command via C-u M-| but since we're trying to
-;; optimize things a bit:
-
+;; A somewhat insanely powerful trick, evaluate a region via a shell command and
+;; replace the region with the resulting output. Normally you would access this
+;; command via C-u M-| but since we're trying to optimize things a bit:
 (defun custom-shell-command-on-region nil
   "Replace region with ``shell-command-on-region''.
 By default, this will make mark active if it is not and then
@@ -422,7 +380,6 @@ whatnot on a region."
 
 ;; Many times you'll want to search for the word or expression at the
 ;; point. Here is a feature stolen from vi:
-
 (defun isearch-forward-current-word-keep-offset ()
   "Mimic vi search foward at point feature."
   (interactive)
@@ -478,7 +435,6 @@ whatnot on a region."
   (insert ";"))
 
 ;; Filecache configuration
-
 (defun file-cache-delete-svn ()
   (file-cache-delete-file-regexp ".*\\.svn.*"))
 
@@ -561,8 +517,8 @@ directory, select directory. Lastly the file is opened."
     )
   )
 
-;; Helper for compilation. Close the compilation window if
-;; there was no error at all.
+;; Helper for compilation. Close the compilation window if there was no error at
+;; all.
 (defun compilation-exit-autoclose (status code msg)
   ;; If M-x compile exists with a 0
   (when (and (eq status 'exit) (zerop code))
@@ -575,7 +531,7 @@ directory, select directory. Lastly the file is opened."
 ;; Specify my function (maybe I should have done a lambda function)
 (setq compilation-exit-message-function 'compilation-exit-autoclose)
 
-;;switch to gnus group buffer or start gnus
+;; Switch to gnus group buffer or start gnus
 (defun my-switch-to-gnus-group-buffer ()
   "Switch to gnus group buffer if it exists, otherwise start gnus"
   (interactive)
@@ -584,9 +540,7 @@ directory, select directory. Lastly the file is opened."
       (gnus)
     (switch-to-buffer "*Group*")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Global keybindings                                                         
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Global keybindings                                                         
 
 (global-set-key "\M-,"          	'pop-tag-mark)
 (global-set-key "\C-z"          	'advertised-undo)
@@ -631,12 +585,14 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
-;; f1, f4 and f5 used by org-mode
 (global-set-key (kbd "<f2>")            'my-recompile)
 (global-set-key (kbd "<f5>")            'visit-ansi-term)
 (global-set-key (kbd "<f6>")            'gud-next)
 (global-set-key (kbd "<f7>")            'gud-step)
 (global-set-key (kbd "<f8>")            'gud-finish)
+; F9-F12 are taken by org-mode
+(global-set-key (kbd "<f5>")            'slime-selector)
+
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
@@ -646,7 +602,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(shift f3)]            'bc-next)
 (global-set-key [(meta f3)]             'bc-list)
 
-;;; WINDOW SPLITING
+;;; Window spliting
 (global-set-key (kbd "M-5") 		'query-replace)
 (global-set-key (kbd "M-3") 		'split-window-horizontally)
 (global-set-key (kbd "M-2") 		'split-window-vertically)
@@ -655,7 +611,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-o") 		'other-window)
 
 ;; Anything config
-
 (require 'anything-config)
 (setq fit-frame-inhibit-fitting-flag t)
 (setq anything-sources
@@ -695,17 +650,15 @@ directory, select directory. Lastly the file is opened."
      ac-source-words-in-buffer
      ac-source-dabbrev)))
 
-; Make Emacs ask me if I want to exit. I have a tendency to hit C-x
-; C-c by accident sometimes. When I'm on a machine without this and
-; I'm using Emacs, I end up cursing myself.
+; Make Emacs ask me if I want to exit. I have a tendency to hit C-x C-c by
+; accident sometimes. When I'm on a machine without this and I'm using Emacs, I
+; end up cursing myself.
 (global-set-key "\C-x\C-c"
                 (lambda () (interactive)
                   (if (string-equal "y" (read-string "Exit Emacs (y/n)? "))
                       (save-buffers-kill-emacs))))
 
-(global-set-key [(control meta down-mouse-3)] 'imenu)
-
-;; load host/site specific config if it exists
+;; Load host/site specific config if it exists
 (let ((site-lib "~/elisp/site.el"))
   (message "loading site.el")
   (if (file-exists-p site-lib) (load-file site-lib)))
