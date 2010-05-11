@@ -169,6 +169,9 @@
 (setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
+(setq py-pychecker-command "/home/mburrows/scripts/pychecker.sh")
+(setq py-pychecker-command-args (quote ("")))
+(setq python-check-command "/home/mburrows/scripts/pychecker.sh")
 
 ;; CC Mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
@@ -585,6 +588,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
+(global-set-key (kbd "<f1>")            'my-compile)
 (global-set-key (kbd "<f2>")            'my-recompile)
 (global-set-key (kbd "<f5>")            'visit-ansi-term)
 (global-set-key (kbd "<f6>")            'gud-next)
