@@ -1,0 +1,3 @@
+#name : Boost Test Assertion
+# --
+BOOST_CHECK(${1:condition});

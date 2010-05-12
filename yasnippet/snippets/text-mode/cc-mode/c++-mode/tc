@@ -1,0 +1,3 @@
+#name : Boost Test Case
+# --
+test->add(BOOST_TEST_CASE(&${1:testName}));
