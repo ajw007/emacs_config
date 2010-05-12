@@ -1,4 +1,7 @@
-;;;; My emacs customisations                                                          
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; My emacs customisations                                                    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
 
@@ -94,6 +97,11 @@
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 
+;; Yank history
+(global-set-key "\C-cy" '(lambda ()
+   (interactive)
+   (popup-menu 'yank-menu)))
+
 ;; GIT integration
 (require 'magit)
 
@@ -142,8 +150,44 @@
 (yas/initialize)
 (yas/load-directory "~/elisp/yasnippet/snippets")
 
-;; Make buffer list perty
+;; Make buffer list perty and grouped
 (defalias 'list-buffers 'ibuffer)
+
+(setq ibuffer-saved-filter-groups
+      (quote (("default"      
+               ("Org" (mode . org-mode))  
+               ("Mail"
+                (or 
+                 (mode . message-mode)
+                 (mode . mail-mode)))
+               ("C++" 
+                (or
+                 (mode . c-mode)
+                 (mode . c++-mode)
+                 (name . "\.inc$"))) 
+               ("Python" (mode . python-mode))
+               ("SQL" 
+                (or
+                 (mode . sql-mode)
+                 (name . "\.sqli$")))
+               ("Lisp"
+                (or 
+                 (mode . lisp-mode)
+                 (mode . emacs-lisp-mode)))
+               ("Subversion" (name . "\*svn"))
+               ("Magit" (name . "\*magit"))
+               ("ERC" (mode . erc-mode))
+               ("Chat" (name . "\*.*jabber.*\*"))
+               ("Directories" (mode . dired-mode))
+               ("Help"
+                (or
+                 (name . "\*Help\*")
+                 (name . "\*Apropos\*")
+                 (name . "\*info\*")))))))
+
+(add-hook 'ibuffer-mode-hook
+  (lambda ()
+    (ibuffer-switch-to-saved-filter-groups "default")))
 
 ;; Jabber
 (add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
@@ -157,7 +201,21 @@
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 (global-set-key "\M-." 'etags-select-find-tag)
 
+;; Get rid of the scrollbar if possible, we want code not chrome!
+(if (require 'sml-modeline nil 'noerror)
+  (progn 
+    (sml-modeline-mode 1)
+    (scroll-bar-mode -1))
+  (scroll-bar-mode 1)
+  (set-scroll-bar-mode 'right))
+
+;; Enable CUA for rectangle selection only, use C-Return to activate
+(setq cua-enable-cua-keys nil)
+(cua-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Language modes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Python mode
 (autoload 'python-mode "python-mode" "Python Mode." t)
@@ -215,7 +273,9 @@
 (autoload 'expand-member-functions "member-functions" "Expand C++ member function declarations" t)
 (add-hook 'c++-mode-hook (lambda () (local-set-key "\C-cm" #'expand-member-functions)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Useful functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun dot-emacs ()
   "Visit .emacs"
@@ -543,7 +603,9 @@ directory, select directory. Lastly the file is opened."
       (gnus)
     (switch-to-buffer "*Group*")))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global keybindings                                                         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (global-set-key "\M-,"          	'pop-tag-mark)
 (global-set-key "\C-z"          	'advertised-undo)
@@ -576,7 +638,6 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key [(control ? )]          'hippie-expand)
 (global-set-key [(control ?')]          'set-mark-command)
-(global-set-key [(control return)]      'set-mark-command)
 (global-set-key [(control right)]       'forward-word)
 (global-set-key [(control left)]        'backward-word)
 
