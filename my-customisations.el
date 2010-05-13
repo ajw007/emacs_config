@@ -6,9 +6,8 @@
 (add-to-list 'load-path "~/elisp")
 (add-to-list 'load-path "~/elisp/external")
 
-;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
-;;(server-start)
-;; deprecated, use emacs --daemon
+;; Start emacs as a server, push files to it using 'emacsclient'
+(server-start)
 
 ;; Sort out annoyances
 (global-font-lock-mode 1)
@@ -30,7 +29,6 @@
 (column-number-mode)
 (setq gdb-create-source-file-list nil)
 (setq global-auto-revert-mode t)
-(scroll-bar-mode -1)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
@@ -131,7 +129,7 @@
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "~/elisp/external/yasnippet/snippets")
-(yas/load-directory "~/elisp/snippets") ; my custom snippets which are not part of the main distribution
+(yas/load-directory "~/elisp/snippets") ; my custom snippets
 
 ;; Make buffer list perty and grouped
 (defalias 'list-buffers 'ibuffer)
@@ -220,8 +218,14 @@ Subsequent calls expands the selection to larger semantic unit."
 
 (global-set-key "\M-8" 'extend-selection)
 
+;; Don't use the scrollbar, we want to see code not chrome
 (load-file "~/elisp/external/sml-modeline.el")
 (sml-mode t)
+(scroll-bar-mode -1)
+
+;; Session management
+(require 'winring)
+(winring-initialize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Language modes
@@ -349,10 +353,9 @@ Subsequent calls expands the selection to larger semantic unit."
   "Use with isearch hook to end search at first char of match."
   (when isearch-forward (goto-char isearch-other-end)))
 
-;; Many times you'll do a kill-line command with the only intention of getting
-;; the contents of the line into the killring. Here's an idea stolen from
-;; Slickedit, if you press copy or cut when no region is active you'll copy or
-;; cut the current line:
+;; Many times you'll do a kill-line command with the only intention of getting the contents of the line into the
+;; killring. Here's an idea stolen from Slickedit, if you press copy or cut when no region is active you'll copy or cut
+;; the current line:
 (defadvice kill-ring-save (before slickcopy activate compile)
   "When called rinteractively with no active region, copy a single line instead."
   (interactive
@@ -367,9 +370,8 @@ Subsequent calls expands the selection to larger semantic unit."
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 
-;; Most times you'll want to open a fresh line and move to it without breaking
-;; the current one even if the point is not at the end of the line. Let's copy
-;; how vi opens new lines and use it with C-o and use [return] for doing hard
+;; Most times you'll want to open a fresh line and move to it without breaking the current one even if the point is not
+;; at the end of the line. Let's copy how vi opens new lines and use it with C-o and use [return] for doing hard
 ;; linebreaks:
 (defun vi-open-next-line (arg)
   "Move to the next line (like vi) and then opens a line."
@@ -386,8 +388,7 @@ Subsequent calls expands the selection to larger semantic unit."
   (open-line arg)
   (indent-according-to-mode))
 
-;; Another cool vi feature, pressing % when on a left or right parenthese will
-;; jump to the matching parenthese:
+;; Another cool vi feature, pressing % when on a left or right parenthese will jump to the matching parenthese:
 (defun match-paren (arg)
   "Go to the matching parenthesis if on parenthesis otherwise insert %."
   (interactive "p")
@@ -395,9 +396,8 @@ Subsequent calls expands the selection to larger semantic unit."
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t (self-insert-command (or arg 1)))))
 
-;; A somewhat insanely powerful trick, evaluate a region via a shell command and
-;; replace the region with the resulting output. Normally you would access this
-;; command via C-u M-| but since we're trying to optimize things a bit:
+;; A somewhat insanely powerful trick, evaluate a region via a shell command and replace the region with the resulting
+;; output. Normally you would access this command via C-u M-| but since we're trying to optimize things a bit:
 (defun custom-shell-command-on-region nil
   "Replace region with ``shell-command-on-region''.
 By default, this will make mark active if it is not and then
@@ -422,8 +422,7 @@ whatnot on a region."
   (let ((fill-column 90002000))
     (fill-paragraph nil)))
 
-;; Many times you'll want to search for the word or expression at the
-;; point. Here is a feature stolen from vi:
+;; Many times you'll want to search for the word or expression at the point. Here is a feature stolen from vi:
 (defun isearch-forward-current-word-keep-offset ()
   "Mimic vi search foward at point feature."
   (interactive)
@@ -602,6 +601,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-cf"         	'file-cache-ido-find-file)
 (global-set-key "\C-ch"         	'list-matching-lines)
 (global-set-key "\C-ci"         	'magit-status)
+(global-set-key "\C-c\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-x\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-cm"         	'manual-entry)
 (global-set-key "\C-co"         	'ff-find-other-file)
@@ -660,19 +660,23 @@ directory, select directory. Lastly the file is opened."
 (require 'anything-config)
 (setq fit-frame-inhibit-fitting-flag t)
 (setq anything-sources
-       (list anything-c-source-buffers
+       (list anything-c-source-fixme
+             anything-c-source-buffers
              anything-c-source-buffer-not-found
              anything-c-source-file-name-history
              anything-c-source-files-in-current-dir
+             anything-c-source-imenu
+             anything-c-source-ctags
              anything-c-source-file-cache
              anything-c-source-bookmarks
-             anything-c-source-occur
              anything-c-source-info-pages
              anything-c-source-man-pages
+             anything-c-source-emacs-commands             
              anything-c-source-calculation-result
+             anything-c-source-occur
              ;anything-c-source-google-suggest
-             anything-c-source-locate
-             anything-c-source-emacs-commands))
+             ;anything-c-source-locate
+             ))
 
 (global-set-key (kbd "C-;") 'anything)
 
