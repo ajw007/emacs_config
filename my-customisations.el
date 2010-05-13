@@ -194,7 +194,7 @@
 (add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
 (require 'jabber)
 
-;; Enable breadcrumbs
+;; Enable breadcrumbs, bound to F3
 (require 'breadcrumb)
 
 ;; Provide a menu of tags when there's multiple matches
@@ -210,31 +210,12 @@
   (scroll-bar-mode 1)
   (set-scroll-bar-mode 'right))
 
-;; Enable CUA for rectangle selection only, use C-Return to activate
-(setq cua-enable-cua-keys nil)
-(cua-mode t)
-
 ;; Setup bookmarks
 (setq 
   bookmark-default-file "~/elisp/bookmarks" 
   bookmark-save-flag 1)                     
 
-;; Highlighting to see all occurrences of a word in the buffer
-(setq highlighted-word "")
-(make-variable-buffer-local 'highlighted-word)
-
-(defun highlight-word (word)
- (interactive (list (thing-at-point 'symbol)))
- (unhighlight-regexp (regexp-quote highlighted-word))
- (if (not (equal highlighted-word word))
-     (progn
-       (highlight-regexp (regexp-quote word))
-       (setq highlighted-word word))
-   (setq highlighted-word "")))
-
-(global-set-key (kbd "C-x C-h") 'highlight-word)
-
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
+;; Select current word then semantic unit
 (defun semnav-up (arg)
   (interactive "p")
   (when (nth 3 (syntax-ppss))
@@ -248,7 +229,6 @@
       (incf arg)))
   (up-list arg))
 
-;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
 (defun extend-selection (arg &optional incremental)
   "Select the current word.
 Subsequent calls expands the selection to larger semantic unit."
@@ -330,6 +310,9 @@ Subsequent calls expands the selection to larger semantic unit."
 (autoload 'expand-member-functions "member-functions" "Expand C++ member function declarations" t)
 (add-hook 'c++-mode-hook (lambda () (local-set-key "\C-cm" #'expand-member-functions)))
 
+;; Turn on symbol highlighting
+(require 'highlight-symbol)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Useful functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -342,14 +325,14 @@ Subsequent calls expands the selection to larger semantic unit."
 (defun load-emacs ()
   "Load .emacs"
   (interactive)
-  (load-file "~/.emacs"))
+  (load-file "~/.emacs")))
 
 (defun indent-buffer ()
   "Indents the whole buffer."
   (interactive)
   (let ((beg (point-min))
         (end (point-max)))
-    (indent-region beg end)))
+    (indent-region beg end))))
 
 ;; Extend recenter line command
 ;; e.g. C-l = recenter middle, C-l C-l = top, C-l C-l C-l = bottom
@@ -708,27 +691,29 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key (kbd "<f1>")            'my-compile)
 (global-set-key (kbd "<f2>")            'my-recompile)
-(global-set-key (kbd "<f5>")            'visit-ansi-term)
+(global-set-key [(control f3)]          'bc-set)
+(global-set-key [(f3)]                  'bc-previous)
+(global-set-key "\C-c\C-j"              'bc-local-previous)
+(global-set-key [(shift f3)]            'bc-next)
+(global-set-key [(meta f3)]             'bc-list)
+(global-set-key [(control f4)]          'highlight-symbol-at-point)
+(global-set-key [f4]                    'highlight-symbol-next)
+(global-set-key [(shift f4)]            'highlight-symbol-prev)
+(global-set-key (kbd "<f5>")            'slime-selector)
 (global-set-key (kbd "<f6>")            'gud-next)
 (global-set-key (kbd "<f7>")            'gud-step)
 (global-set-key (kbd "<f8>")            'gud-finish)
-; F9-F12 are taken by org-mode
-(global-set-key (kbd "<f5>")            'slime-selector)
+; F9-F12 are mostly taken by org-mode
+(global-set-key (kbd "<f9> t")          'visit-ansi-term)
 
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
 
-;; Breadcrumb bindings
-(global-set-key [(control f3)]          'bc-set)
-(global-set-key [(f3)]                  'bc-previous)
-(global-set-key [(shift f3)]            'bc-next)
-(global-set-key [(meta f3)]             'bc-list)
-
 ;;; Window spliting
-(global-set-key (kbd "M-5") 		'query-replace)
-(global-set-key (kbd "M-3") 		'split-window-horizontally)
-(global-set-key (kbd "M-2") 		'split-window-vertically)
 (global-set-key (kbd "M-1") 		'delete-other-windows)
+(global-set-key (kbd "M-2") 		'split-window-vertically)
+(global-set-key (kbd "M-3") 		'split-window-horizontally)
+(global-set-key (kbd "M-5") 		'query-replace)
 (global-set-key (kbd "M-0") 		'delete-window)
 (global-set-key (kbd "M-o") 		'other-window)
 
