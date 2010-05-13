@@ -15,6 +15,7 @@ wget http://mumble.net/~campbell/emacs/paredit.el
 wget http://www.emacswiki.org/emacs/download/sml-modeline.el
 wget http://nschum.de/src/emacs/highlight-symbol/highlight-symbol.el
 wget http://www.python.org/emacs/winring/winring.el
+wget http://www.bookshelf.jp/elc/list-register.el
 
 git clone git://repo.or.cz/org-mode.git && cd org-mode && make && cd ..
 
