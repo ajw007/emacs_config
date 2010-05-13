@@ -478,6 +478,13 @@ whatnot on a region."
   (end-of-line)
   (insert ";"))
 
+(defun eol-insert-semicolon-and-newline()
+  "Move to EOL and insert a semicolon and a newline."
+  (interactive)
+  (end-of-line)
+  (insert ";")
+  (newline-and-indent))
+
 ;; Filecache configuration
 (defun file-cache-delete-svn ()
   (file-cache-delete-file-regexp ".*\\.svn.*"))
@@ -588,6 +595,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\M-s"          	'isearch-forward-current-word-keep-offset)
 
 (global-set-key "\C-ca"         	'align)
+(global-set-key "\C-c\C-b"         	'extend-selection)
 (global-set-key "\C-cc"         	'my-compile)
 (global-set-key "\C-cd"         	'dot-emacs)
 (global-set-key "\C-ce"         	'eval-region)
@@ -596,14 +604,12 @@ directory, select directory. Lastly the file is opened."
 (global-set-key "\C-ci"         	'magit-status)
 (global-set-key "\C-x\C-l"		'session-jump-to-last-change)
 (global-set-key "\C-cm"         	'manual-entry)
-(global-set-key "\C-cn"         	'my-switch-to-gnus-group-buffer)
 (global-set-key "\C-co"         	'ff-find-other-file)
 (global-set-key [(control tab)]         'ff-find-other-file)
 (global-set-key "\C-cr"         	'load-emacs)
 (global-set-key "\C-c\C-r"         	'revert-buffer)
 (global-set-key "\C-cs"         	'svn-status)
 (global-set-key "\C-cw"         	'swap-windows)
-(global-set-key "\C-c\C-y"         	'haskell-hayoo)
 
 (global-set-key [(control s)]   	'isearch-forward-regexp)
 (global-set-key [(control r)]   	'isearch-backward-regexp)
@@ -618,6 +624,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control meta down)]   'duplicate-line-down)
 (global-set-key [(control meta up)]     'duplicate-line-up)
 (global-set-key [(control meta return)] 'eol-insert-semicolon)
+(global-set-key [(shift meta return)]   'eol-insert-semicolon-and-newline)
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
