@@ -6,7 +6,8 @@
 (add-to-list 'load-path "~/elisp")
 
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
-(server-start)
+;;(server-start)
+;; deprecated, use emacs --daemon
 
 ;; Sort out annoyances
 (global-font-lock-mode 1)
@@ -265,7 +266,7 @@ Subsequent calls expands the selection to larger semantic unit."
           (goto-char (match-end 0))
         (unless (memq (char-before) '(?\) ?\"))
           (forward-sexp)))
-      (mark-sexp -1))))ex
+      (mark-sexp -1))))
 
 (global-set-key "\M-8" 'extend-selection)
 
@@ -310,7 +311,7 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;; Org mode setup
 (add-to-list 'load-path "~/elisp/org-mode/lisp")
-;;(load-file "~/elisp/my-org-mode.el")
+(load-file "~/elisp/my-org-mode.el")
 
 ;; Wikipedia mode
 (autoload 'wikipedia-mode "wikipedia-mode.el"

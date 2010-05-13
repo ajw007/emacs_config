@@ -166,7 +166,7 @@
 
 ;; Custom agenda views
 (setq org-agenda-custom-commands 
-      '(("p" "Projects" tags "/PROJECT" ((org-use-tag-inheritance nil)))
+      '(("p" "Projects" tags "PROJECT" ((org-use-tag-inheritance nil)))
         ("s" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
         ("n" "Next Actions" tags "NEXT" ((org-agenda-todo-ignore-with-date nil)))
         ("w" "Work Tasks" tags-todo "@work-WAITING|@errands-london" nil)
