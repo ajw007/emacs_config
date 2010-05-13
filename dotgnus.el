@@ -115,7 +115,7 @@
 (gnus-demon-init)
 
 ;; BBDB
-(add-to-list 'load-path "~/elisp/bbdb/lisp")
+(add-to-list 'load-path "~/elisp/external/bbdb/lisp")
 (require 'bbdb)
 (bbdb-initialize)
 (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)

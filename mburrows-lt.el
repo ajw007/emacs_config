@@ -1,11 +1,11 @@
 ;; Setup SLIME mode
-(add-to-list 'load-path "~/elisp/slime")
+(add-to-list 'load-path "~/elisp/external/slime")
 (require 'slime-autoloads)
 
 (eval-after-load "slime"
   '(progn
     (setq slime-lisp-implementations
-     '((sbcl ("sbcl" "--core" "/home/mburrows/elisp/slime/sbcl.core-for-slime"))))
+     '((sbcl ("sbcl" "--core" "/home/mburrows/elisp/external/slime/sbcl.core-for-slime"))))
 
     (setq inferior-lisp-program "/usr/bin/sbcl"
           lisp-indent-function 'common-lisp-indent-function
@@ -45,3 +45,11 @@
     (when (y-or-n-p "Start ERC? ")
       (erc :server "irc.freenode.net" :port 6667 :nick "dic3m4n" :full-name "Matt Burrows"))))
 
+(global-set-key (kbd "<f9> i") 'djcb-erc-start-or-switch)
+
+;; (load "~/.ercpass")
+;; (require 'erc-services)
+;; (erc-services-mode 1)
+;; (setq erc-prompt-for-nickserv-password nil)
+;; (setq erc-nickserv-passwords
+;;       `((freenode (("dic3m4n_" . ,freenode-diceman-pass)))))

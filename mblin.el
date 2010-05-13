@@ -20,7 +20,7 @@
 (bats-mail)
 
 ;; Setup SLIME mode
-(add-to-list 'load-path "~/elisp/slime")
+(add-to-list 'load-path "~/elisp/external/slime")
 (require 'slime-autoloads)
 
 

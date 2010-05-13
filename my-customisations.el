@@ -4,6 +4,7 @@
       
 ;; Add local elisp dir to the load path
 (add-to-list 'load-path "~/elisp")
+(add-to-list 'load-path "~/elisp/external")
 
 ;; Start emacs as a server, push files to it using 'emacsclient --no-wait'
 ;;(server-start)
@@ -104,14 +105,15 @@
    (popup-menu 'yank-menu)))
 
 ;; GIT integration
+(add-to-list 'load-path "~/elisp/external/magit")
 (require 'magit)
 
 ;; Eliminate multiple buffers when browsing a directory (very annoying)
 (require 'dired-single)
 
 (defun my-dired-init ()
-  "Bunch of stuff to run for dired, either immediately or when it's
-   loaded."
+  "Bunch of stuff to run for dired, either immediately or when
+   it's loaded."
   ;; <add other stuff here>
   (define-key dired-mode-map [return] 'joc-dired-single-buffer)
   (define-key dired-mode-map [mouse-1] 'joc-dired-single-buffer-mouse)
@@ -146,10 +148,11 @@
                    'nxml-mode))
 
 ;; Load snippet package
-(add-to-list 'load-path "~/elisp/yasnippet")
+(add-to-list 'load-path "~/elisp/external/yasnippet")
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/elisp/yasnippet/snippets")
+(yas/load-directory "~/elisp/external/yasnippet/snippets")
+(yas/load-directory "~/elisp/snippets") ; my custom snippets which are not part of the main distribution
 
 ;; Make buffer list perty and grouped
 (defalias 'list-buffers 'ibuffer)
@@ -191,7 +194,7 @@
     (ibuffer-switch-to-saved-filter-groups "default")))
 
 ;; Jabber
-(add-to-list 'load-path "~/elisp/emacs-jabber-0.7.93")
+(add-to-list 'load-path "~/elisp/external/emacs-jabber")
 (require 'jabber)
 
 ;; Enable breadcrumbs, bound to F3
@@ -290,7 +293,7 @@ Subsequent calls expands the selection to larger semantic unit."
 (winring-prev-configuration)
 
 ;; Org mode setup
-(add-to-list 'load-path "~/elisp/org-mode/lisp")
+(add-to-list 'load-path "~/elisp/external/org-mode/lisp")
 (load-file "~/elisp/my-org-mode.el")
 
 ;; Wikipedia mode
@@ -302,7 +305,7 @@ Subsequent calls expands the selection to larger semantic unit."
   "Minor mode for editing long lines." t)
 
 ;; Haskell mode
-(load-library "~/elisp/haskellmode-emacs/haskell-site-file")
+(load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 
@@ -325,14 +328,14 @@ Subsequent calls expands the selection to larger semantic unit."
 (defun load-emacs ()
   "Load .emacs"
   (interactive)
-  (load-file "~/.emacs")))
+  (load-file "~/.emacs"))
 
 (defun indent-buffer ()
   "Indents the whole buffer."
   (interactive)
   (let ((beg (point-min))
         (end (point-max)))
-    (indent-region beg end))))
+    (indent-region beg end)))
 
 ;; Extend recenter line command
 ;; e.g. C-l = recenter middle, C-l C-l = top, C-l C-l C-l = bottom

@@ -5,8 +5,7 @@
 ;;;    http://doc.norang.ca/org-mode.html
 ;;;
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-(load-file "~/elisp/org-mode/lisp/org-install.el") ; use latest dev version
-;;(require 'org-install)
+(load-file "~/elisp/external/org-mode/lisp/org-install.el") ; use latest dev version
 (require 'org-checklist)
 
 (defun bh/weekday-p ()
@@ -81,9 +80,9 @@
 (add-hook 'org-mode-hook
           (lambda ()
             ;; yasnippet
-            (make-variable-buffer-local 'yas/trigger-key)
-            (setq yas/trigger-key [tab])
-            (define-key yas/keymap [tab] 'yas/next-field-group)
+            ;;(make-variable-buffer-local 'yas/trigger-key)
+            ;;(setq yas/trigger-key [tab])
+            ;;(define-key yas/keymap [tab] 'yas/next-field-group)
             ;; flyspell mode to spell check everywhere
             (flyspell-mode 1)))
 
