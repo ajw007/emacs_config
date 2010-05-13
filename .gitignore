@@ -5,3 +5,5 @@ nohup.out
 site.el
 CVS
 bookmarks
+external/*
+!external/bootstrap.sh

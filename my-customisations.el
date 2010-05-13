@@ -253,9 +253,9 @@ Subsequent calls expands the selection to larger semantic unit."
 (load-file "~/elisp/my-org-mode.el")
 
 ;; Haskell mode
-(load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;(load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
+;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 
 ;; Turn on symbol highlighting
 (require 'highlight-symbol)

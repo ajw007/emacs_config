@@ -1,7 +1,10 @@
+mkdir -p external
+cd external
+
 wget http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
 git clone git://gitorious.org/magit/mainline.git magit
 cvs -d :pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot co slime
-darcs get http://code.haskell.org/haskellmode-emacs
+#darcs get http://code.haskell.org/haskellmode-emacs
 wget http://www.emacswiki.org/emacs/download/etags-select.el
 wget http://www.xsteve.at/prg/emacs/psvn.el
 wget http://www.emacswiki.org/emacs/download/anything.el
