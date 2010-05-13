@@ -4,3 +4,7 @@
 nohup.out
 site.el
 CVS
+org-mode/
+slime/*
+bookmarks
+
