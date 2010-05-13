@@ -4,8 +4,8 @@
 
 (eval-after-load "slime"
   '(progn
-    (setq slime-lisp-implementations
-     '((sbcl ("sbcl" "--core" "/home/mburrows/elisp/external/slime/sbcl.core-for-slime"))))
+    ;(setq slime-lisp-implementations
+    ; '((sbcl ("sbcl" "--core" "/home/mburrows/elisp/external/slime/sbcl.core-for-slime"))))
 
     (setq inferior-lisp-program "/usr/bin/sbcl"
           lisp-indent-function 'common-lisp-indent-function

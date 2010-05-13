@@ -42,9 +42,6 @@
   scroll-conservatively 100000
   scroll-preserve-screen-position 1)
 
-(require 'bar-cursor)
-(bar-cursor-mode)
-
 ;; Make text mode the default
 (setq default-major-mode 'text-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -75,8 +72,9 @@
 (setq uniquify-ignore-buffers-re "^\\*")
 
 ;; Perty colours
+(add-to-list 'load-path "~/elisp/external/color-theme")
 (require 'color-theme)
-(color-theme-initialize)
+(load-file "~/elisp/external/color-theme/themes/color-theme-library.el")
 (load-file "~/elisp/themes/color-theme-wombat.el")
 (color-theme-wombat)
 
@@ -193,10 +191,6 @@
   (lambda ()
     (ibuffer-switch-to-saved-filter-groups "default")))
 
-;; Jabber
-(add-to-list 'load-path "~/elisp/external/emacs-jabber")
-(require 'jabber)
-
 ;; Enable breadcrumbs, bound to F3
 (require 'breadcrumb)
 
@@ -295,14 +289,6 @@ Subsequent calls expands the selection to larger semantic unit."
 ;; Org mode setup
 (add-to-list 'load-path "~/elisp/external/org-mode/lisp")
 (load-file "~/elisp/my-org-mode.el")
-
-;; Wikipedia mode
-(autoload 'wikipedia-mode "wikipedia-mode.el"
-  "Major mode for editing documents in wikipedia markup." t)
-(add-to-list 'auto-mode-alist '("\\.wiki\\'" . wikipedia-mode))
-(add-to-list 'auto-mode-alist '("index.\\.*" . wikipedia-mode)) ; for use with ViewSourceWith plugin
-(autoload 'longlines-mode "longlines.el"
-  "Minor mode for editing long lines." t)
 
 ;; Haskell mode
 (load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
@@ -469,15 +455,6 @@ whatnot on a region."
     ; Get rid of final newline cause I normally did by hand anyway.
     (delete-char -1)))
 
-(defun delete-enclosed-text ()
-  "Delete text between any pair of delimiters."
-  (interactive)
-  (save-excursion
-    (let (p1 p2)
-      (skip-chars-backward "^(<[“") (setq p1 (point))
-      (skip-chars-forward "^)>]”") (setq p2 (point))
-      (delete-region p1 p2))))
-
 (defun remove-line-breaks ()
   "Remove line endings in a paragraph."
   (interactive)
@@ -637,15 +614,6 @@ directory, select directory. Lastly the file is opened."
 ;; Specify my function (maybe I should have done a lambda function)
 (setq compilation-exit-message-function 'compilation-exit-autoclose)
 
-;; Switch to gnus group buffer or start gnus
-(defun my-switch-to-gnus-group-buffer ()
-  "Switch to gnus group buffer if it exists, otherwise start gnus"
-  (interactive)
-  (if (or (not (fboundp 'gnus-alive-p))
-          (not (gnus-alive-p)))
-      (gnus)
-    (switch-to-buffer "*Group*")))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global keybindings                                                         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -739,26 +707,6 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-emacs-commands))
 
 (global-set-key (kbd "C-;") 'anything)
-
-;; Auto-complete mode
-(require 'auto-complete)
-(global-auto-complete-mode t)
-(require 'auto-complete-yasnippet)
-(require 'auto-complete-python)
-(require 'auto-complete-etags)
-(require 'ac-dabbrev)
-(setq ac-auto-start nil)
-(global-set-key "\M-/" 'ac-start)
-(define-key ac-complete-mode-map "\M-/" 'ac-stop)
-(define-key ac-complete-mode-map "\C-n" 'ac-next)
-(define-key ac-complete-mode-map "\C-p" 'ac-previous)
-(setq ac-dwim t)
-
-(custom-set-variables
- '(ac-sources
-   '(ac-source-yasnippet
-     ac-source-words-in-buffer
-     ac-source-dabbrev)))
 
 ; Make Emacs ask me if I want to exit. I have a tendency to hit C-x C-c by
 ; accident sometimes. When I'm on a machine without this and I'm using Emacs, I

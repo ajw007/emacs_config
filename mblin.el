@@ -8,16 +8,13 @@
   (file-cache-add-directory-using-find "/opt/ecn/users/mburrows/source/ecn/source/sql")
   (file-cache-delete-svn))
 
-(setq jabber-account-list '(("mburrows@lxchat" (:connection-type . ssl))
-                            ("maburrow@googlemail.com"
-                              (:network-server . "talk.google.com")
-                              (:port . 443)
-                              (:connection-type . ssl))
-                            ))
-
-;; Load GNUS
-(load-file "~/elisp/dotgnus.el")
-(bats-mail)
+;; BATS chat
+;(setq jabber-account-list '(("mburrows@lxchat" (:connection-type . ssl))
+;                            ("maburrow@googlemail.com"
+;                              (:network-server . "talk.google.com")
+;                              (:port . 443)
+;                              (:connection-type . ssl))
+;                            ))
 
 ;; Setup SLIME mode
 (add-to-list 'load-path "~/elisp/external/slime")
