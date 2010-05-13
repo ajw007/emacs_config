@@ -23,14 +23,14 @@
 (delete-selection-mode t)
 (setq case-fold-search t)
 (setq truncate-lines 1)
-(setq scroll-bar-mode 'right)
 (display-time-mode t)
 (setq-default indent-tabs-mode nil)
 (setq save-place t)
-(setq fill-column 100)
+(setq fill-column 120)
 (column-number-mode)
 (setq gdb-create-source-file-list nil)
 (setq global-auto-revert-mode t)
+(scroll-bar-mode -1)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
@@ -106,30 +106,11 @@
 (add-to-list 'load-path "~/elisp/external/magit")
 (require 'magit)
 
-;; Eliminate multiple buffers when browsing a directory (very annoying)
-(require 'dired-single)
-
-(defun my-dired-init ()
-  "Bunch of stuff to run for dired, either immediately or when
-   it's loaded."
-  ;; <add other stuff here>
-  (define-key dired-mode-map [return] 'joc-dired-single-buffer)
-  (define-key dired-mode-map [mouse-1] 'joc-dired-single-buffer-mouse)
-  (define-key dired-mode-map "^"
-    (function
-     (lambda nil (interactive) (joc-dired-single-buffer "..")))))
-
-;; if dired's already loaded, then the keymap will be bound
-(if (boundp 'dired-mode-map)
-    ;; we're good to go; just add our bindings
-    (my-dired-init)
-  ;; it's not loaded yet, so add our bindings to the load-hook
-  (add-hook 'dired-load-hook 'my-dired-init))
-
 ;; Used to HTML-ize a buffer
 (require 'htmlize)
 
 ;; Session management
+(add-to-list 'load-path "~/elisp/external/session/lisp")
 (require 'session)
 (add-hook 'after-init-hook 'session-initialize)
 
@@ -199,14 +180,6 @@
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 (global-set-key "\M-." 'etags-select-find-tag)
 
-;; Get rid of the scrollbar if possible, we want code not chrome!
-(if (require 'sml-modeline nil 'noerror)
-  (progn 
-    (sml-modeline-mode 1)
-    (scroll-bar-mode -1))
-  (scroll-bar-mode 1)
-  (set-scroll-bar-mode 'right))
-
 ;; Setup bookmarks
 (setq 
   bookmark-default-file "~/elisp/bookmarks" 
@@ -251,14 +224,10 @@ Subsequent calls expands the selection to larger semantic unit."
 ;;; Language modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Python mode
-(autoload 'python-mode "python-mode" "Python Mode." t)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
-
+;; Python mode with IPython shell support
+(require 'python-mode)
 (setq ipython-command "/usr/bin/ipython")
-;; Fix tab completion in the ipython buffer
-(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
+(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n") ; fix tab completion
 (setq py-python-command-args '("-colors" "Linux"))
 (require 'ipython)
 (setq py-pychecker-command "/home/mburrows/scripts/pychecker.sh")
@@ -277,14 +246,7 @@ Subsequent calls expands the selection to larger semantic unit."
 (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . html-helper-mode) auto-mode-alist))
 
-;; Winring configuration
-(require 'winring)
-(setq winring-show-names t)
-(setq winring-prompt-on-create 'nil)
-
-(winring-initialize)
-(winring-new-configuration)
-(winring-prev-configuration)
+;; TODO: install and configure elscreen
 
 ;; Org mode setup
 (add-to-list 'load-path "~/elisp/external/org-mode/lisp")
@@ -294,10 +256,6 @@ Subsequent calls expands the selection to larger semantic unit."
 (load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-
-;; Automatically expand member functions from header definitions
-(autoload 'expand-member-functions "member-functions" "Expand C++ member function declarations" t)
-(add-hook 'c++-mode-hook (lambda () (local-set-key "\C-cm" #'expand-member-functions)))
 
 ;; Turn on symbol highlighting
 (require 'highlight-symbol)
