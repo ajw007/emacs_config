@@ -227,6 +227,9 @@ Subsequent calls expands the selection to larger semantic unit."
 (require 'winring)
 (winring-initialize)
 
+(require 'list-register)
+(global-set-key (kbd "C-x r v") 'list-register)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Language modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -580,6 +583,32 @@ directory, select directory. Lastly the file is opened."
   (cons msg code))
 ;; Specify my function (maybe I should have done a lambda function)
 (setq compilation-exit-message-function 'compilation-exit-autoclose)
+
+(defun djcb-gtags-create-or-update ()
+  "create or update the gnu global tag file"
+  (interactive)
+  (if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
+    (let ((olddir default-directory)
+          (topdir (read-directory-name  
+                    "gtags: top of source tree:" default-directory)))
+      (cd topdir)
+      (shell-command "gtags && echo 'created tagfile'")
+      (cd olddir)) ; restore   
+    ;;  tagfile already exists; update it
+    (shell-command "global -u && echo 'updated tagfile'")))
+
+(add-hook 'gtags-mode-hook 
+  (lambda()
+    (local-set-key (kbd "M-.") 'gtags-find-tag)   ; find a tag, also M-.
+    (local-set-key (kbd "M->") 'gtags-find-rtag)  ; reverse tag
+    (local-set-key (kbd "M-,") 'gtags-pop-stack)  ; pop tag
+    )) 
+
+(add-hook 'c-mode-common-hook
+  (lambda ()
+    (require 'gtags)
+    (gtags-mode t)
+    (djcb-gtags-create-or-update)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Global keybindings                                                         
