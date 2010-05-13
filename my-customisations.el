@@ -220,6 +220,9 @@ Subsequent calls expands the selection to larger semantic unit."
 
 (global-set-key "\M-8" 'extend-selection)
 
+(load-file "~/elisp/external/sml-modeline.el")
+(sml-mode t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Language modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
