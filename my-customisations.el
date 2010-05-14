@@ -1,15 +1,23 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; My emacs customisations                                                    
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; My emacs customisations                                                    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
       
-;; Add local elisp dir to the load path
-(add-to-list 'load-path "~/elisp")
-(add-to-list 'load-path "~/elisp/external")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Add local elisp dirs to the load path
+;;
+(let* ((my-lisp-dir "~/elisp/")
+       (default-directory my-lisp-dir))
+  (setq load-path (cons my-lisp-dir load-path))
+  (normal-top-level-add-subdirs-to-load-path))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Start emacs as a server, push files to it using 'emacsclient'
 (server-start)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sort out annoyances
+;;
 (global-font-lock-mode 1)
 (setq visible-bell t)
 (setq inhibit-splash-screen t)
@@ -29,6 +37,7 @@
 (column-number-mode)
 (setq gdb-create-source-file-list nil)
 (setq global-auto-revert-mode t)
+(global-hl-line-mode t)
 
 ;; Sort out compilation window behavior
 (setq compilation-scroll-output 'first-error)
@@ -55,6 +64,24 @@
                                          try-complete-lisp-symbol-partially 
                                          try-complete-lisp-symbol))
 
+;; Make Emacs ask me if I want to exit. I have a tendency to hit C-x C-c by
+;; accident sometimes. When I'm on a machine without this and I'm using Emacs, I
+;; end up cursing myself.
+(global-set-key "\C-x\C-c"
+                (lambda () (interactive)
+                  (if (string-equal "y" (read-string "Exit Emacs (y/n)? "))
+                      (save-buffers-kill-emacs))))
+
+;; Copy-paste should work with other X clients
+(setq x-select-enable-clipboard t        
+      interprogram-paste-function      
+      'x-cut-buffer-or-selection-value)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Some handy packages
+;;
+
 ;; Turn on midnight mode to clean buffers every evening
 (require 'midnight)
 
@@ -70,7 +97,6 @@
 (setq uniquify-ignore-buffers-re "^\\*")
 
 ;; Perty colours
-(add-to-list 'load-path "~/elisp/external/color-theme")
 (require 'color-theme)
 (load-file "~/elisp/external/color-theme/themes/color-theme-library.el")
 (load-file "~/elisp/themes/color-theme-wombat.el")
@@ -101,14 +127,12 @@
    (popup-menu 'yank-menu)))
 
 ;; GIT integration
-(add-to-list 'load-path "~/elisp/external/magit")
 (require 'magit)
 
 ;; Used to HTML-ize a buffer
 (require 'htmlize)
 
 ;; Session management
-(add-to-list 'load-path "~/elisp/external/session/lisp")
 (require 'session)
 (add-hook 'after-init-hook 'session-initialize)
 
@@ -125,11 +149,12 @@
                    'nxml-mode))
 
 ;; Load snippet package
-(add-to-list 'load-path "~/elisp/external/yasnippet")
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "~/elisp/external/yasnippet/snippets")
 (yas/load-directory "~/elisp/snippets") ; my custom snippets
+(setq yas/wrap-around-region t)
+(setq yas/prompt-functions '(yas/dropdown-prompt yas/x-prompt))
 
 ;; Make buffer list perty and grouped
 (defalias 'list-buffers 'ibuffer)
@@ -225,9 +250,18 @@ Subsequent calls expands the selection to larger semantic unit."
 (require 'list-register)
 (global-set-key (kbd "C-x r v") 'list-register)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Language modes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TODO: install and configure elscreen
+
+;; Org mode setup
+(load-file "~/elisp/my-org-mode.el")
+
+;; Turn on symbol highlighting
+(require 'highlight-symbol)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Language modes
+;;
 
 ;; Python mode with IPython shell support
 (require 'python-mode)
@@ -251,24 +285,15 @@ Subsequent calls expands the selection to larger semantic unit."
 (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . html-helper-mode) auto-mode-alist))
 
-;; TODO: install and configure elscreen
-
-;; Org mode setup
-(add-to-list 'load-path "~/elisp/external/org-mode/lisp")
-(load-file "~/elisp/my-org-mode.el")
-
 ;; Haskell mode
 ;(load-library "~/elisp/external/haskellmode-emacs/haskell-site-file")
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Turn on symbol highlighting
-(require 'highlight-symbol)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Useful functions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Useful functions
+;;
 (defun dot-emacs ()
   "Visit .emacs"
   (interactive)
@@ -578,11 +603,11 @@ directory, select directory. Lastly the file is opened."
   (cons msg code))
 ;; Specify my function (maybe I should have done a lambda function)
 (setq compilation-exit-message-function 'compilation-exit-autoclose)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Global keybindings                                                         
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Global keybindings                                                         
+;;
 (global-set-key "\M-,"          	'pop-tag-mark)
 (global-set-key "\C-z"          	'advertised-undo)
 (global-set-key "\C-l"          	'my-recenter)
@@ -653,8 +678,11 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "M-5") 		'query-replace)
 (global-set-key (kbd "M-0") 		'delete-window)
 (global-set-key (kbd "M-o") 		'other-window)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Anything config
+;;
 (require 'anything-config)
 (setq fit-frame-inhibit-fitting-flag t)
 (setq anything-sources
@@ -664,7 +692,6 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-file-name-history
              anything-c-source-files-in-current-dir
              anything-c-source-imenu
-             anything-c-source-ctags
              anything-c-source-file-cache
              anything-c-source-bookmarks
              anything-c-source-info-pages
@@ -677,16 +704,13 @@ directory, select directory. Lastly the file is opened."
              ))
 
 (global-set-key (kbd "C-;") 'anything)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; Make Emacs ask me if I want to exit. I have a tendency to hit C-x C-c by
-; accident sometimes. When I'm on a machine without this and I'm using Emacs, I
-; end up cursing myself.
-(global-set-key "\C-x\C-c"
-                (lambda () (interactive)
-                  (if (string-equal "y" (read-string "Exit Emacs (y/n)? "))
-                      (save-buffers-kill-emacs))))
-
-;; Load host/site specific config if it exists
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Load host/site specific config if it exists, make sure this gets eval'd last
+;;
 (let ((site-lib "~/elisp/site.el"))
   (message "loading site.el")
   (if (file-exists-p site-lib) (load-file site-lib)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
