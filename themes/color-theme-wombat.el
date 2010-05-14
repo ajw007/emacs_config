@@ -112,7 +112,7 @@
        (flymake-warnline ((t (:background nil :underline "orange"))))
 
 
-       (hl-line ((t (:background "gray15"))))
+       (hl-line ((t (:background "gray10"))))
               
        (custom-variable-tag-face ((t (:foreground "skyblue3"))))
        (custom-state ((t (:foreground "paleGreen3"))))
