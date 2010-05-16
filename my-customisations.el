@@ -250,8 +250,6 @@ Subsequent calls expands the selection to larger semantic unit."
 (require 'list-register)
 (global-set-key (kbd "C-x r v") 'list-register)
 
-;; TODO: install and configure elscreen
-
 ;; Org mode setup
 (load-file "~/elisp/my-org-mode.el")
 
@@ -670,14 +668,6 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
-
-;;; Window spliting
-(global-set-key (kbd "M-1") 		'delete-other-windows)
-(global-set-key (kbd "M-2") 		'split-window-vertically)
-(global-set-key (kbd "M-3") 		'split-window-horizontally)
-(global-set-key (kbd "M-5") 		'query-replace)
-(global-set-key (kbd "M-0") 		'delete-window)
-(global-set-key (kbd "M-o") 		'other-window)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -706,7 +696,6 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "C-;") 'anything)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load host/site specific config if it exists, make sure this gets eval'd last
 ;;
