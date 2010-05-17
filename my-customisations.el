@@ -281,6 +281,10 @@ Subsequent calls expands the selection to larger semantic unit."
 (setq c-default-style '((c++-mode . "k&r") (java-mode . "java") (awk-mode . "awk") (other . "gnu")))
 (setq c-indent-comment-alist '((anchored-comment column . 0) (end-block space . 1) (cpp-end-block space . 2) (other align space . 1)))
 (setq c-offsets-alist '((case-label . 1) (arglist-close . 0) (innamespace . 0)))
+(add-hook 'c++-mode-hook
+          #'(lambda () 
+              (push '(?< . ?>)
+                    (getf autopair-extra-pairs :code))))
 
 ;; html-helper mode
 (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
