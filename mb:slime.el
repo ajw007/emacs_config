@@ -21,7 +21,8 @@
     (define-key slime-mode-map (kbd "C-M-b") 'backward-char)
     (define-key slime-mode-map (kbd "C-f") 'forward-sexp)
     (define-key slime-mode-map (kbd "C-M-f") 'forward-char)
-    
+
+    (define-key slime-mode-map (kbd "M-TAB") 'slime-fuzzy-complete-symbol)
     (define-key slime-mode-map (kbd "RET") 'newline-and-indent)
     (define-key slime-mode-map (kbd "<return>") 'newline-and-indent)
     (define-key slime-mode-map (kbd "C-j") 'newline)

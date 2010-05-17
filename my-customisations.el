@@ -668,6 +668,8 @@ directory, select directory. Lastly the file is opened."
 
 (global-set-key (kbd "<M-prior>") 	'previous-error) 
 (global-set-key (kbd "<M-next>")  	'next-error)
+
+(global-set-key (kbd "M-o")  		'other-window)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
