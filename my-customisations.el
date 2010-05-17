@@ -654,6 +654,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control meta up)]     'duplicate-line-up)
 (global-set-key [(control meta return)] 'eol-insert-semicolon)
 (global-set-key [(shift meta return)]   'eol-insert-semicolon-and-newline)
+(global-set-key [(meta return)]         'vi-open-next-line)
 (global-set-key [(meta left)]   	'winring-prev-configuration)
 (global-set-key [(meta right)]  	'winring-next-configuration)
 
