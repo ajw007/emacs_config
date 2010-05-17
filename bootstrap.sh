@@ -16,6 +16,7 @@ wget http://www.emacswiki.org/emacs/download/sml-modeline.el
 wget http://nschum.de/src/emacs/highlight-symbol/highlight-symbol.el
 wget http://www.python.org/emacs/winring/winring.el
 wget http://www.bookshelf.jp/elc/list-register.el
+wget http://autopair.googlecode.com/svn/tags/REL_0_3/autopair.el
 
 git clone git://repo.or.cz/org-mode.git && cd org-mode && make && cd ..
 

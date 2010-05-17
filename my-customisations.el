@@ -255,6 +255,10 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;; Turn on symbol highlighting
 (require 'highlight-symbol)
+
+;; Automatically pair braces and quotes
+(require 'autopair)
+(autopair-global-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
