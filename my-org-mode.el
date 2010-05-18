@@ -6,8 +6,6 @@
 ;;;
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 (load-file "~/elisp/external/org-mode/lisp/org-install.el") ; use latest dev version
-
-(add-to-list 'load-path "~/elisp/external/org-mode/contrib/lisp")
 (require 'org-checklist)
 
 (defun bh/weekday-p ()
