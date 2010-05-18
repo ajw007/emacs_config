@@ -273,7 +273,13 @@ Subsequent calls expands the selection to larger semantic unit."
 (setq py-pychecker-command "/home/mburrows/scripts/pychecker.sh")
 (setq py-pychecker-command-args (quote ("")))
 (setq python-check-command "/home/mburrows/scripts/pychecker.sh")
-(add-hook 'python-mode-hook #'(lambda () (autopair-mode)))
+(add-hook 'python-mode-hook 
+          #'(lambda () 
+              (progn 
+                (autopair-mode)
+                (setq autopair-handle-action-fns
+                      (list #'autopair-default-handle-action
+                            #'autopair-python-triple-quote-action)))))
 
 ;; CC Mode
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
