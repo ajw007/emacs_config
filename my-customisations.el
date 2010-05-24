@@ -258,7 +258,7 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;; Automatically pair braces and quotes
 (require 'autopair)
-(autopair-global-mode)
+;;(autopair-global-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -684,10 +684,6 @@ directory, select directory. Lastly the file is opened."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keyboard translations
 ;;
-(keyboard-translate ?\( ?\[)
-(keyboard-translate ?\[ ?\()
-(keyboard-translate ?\) ?\])
-(keyboard-translate ?\] ?\))
 (keyboard-translate ?\@ ?\")
 (keyboard-translate ?\" ?\@)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -710,10 +706,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-man-pages
              anything-c-source-emacs-commands             
              anything-c-source-calculation-result
-             anything-c-source-occur
-             ;anything-c-source-google-suggest
-             ;anything-c-source-locate
-             ))
+             anything-c-source-occur))
 
 (global-set-key (kbd "C-;") 'anything)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
