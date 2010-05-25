@@ -6,8 +6,6 @@
 ;;;
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 (load-file "~/elisp/external/org-mode/lisp/org-install.el") ; use latest dev version
-
-(add-to-list 'load-path "~/elisp/external/org-mode/contrib/lisp")
 (require 'org-checklist)
 
 (defun bh/weekday-p ()
@@ -249,17 +247,14 @@
 ; Always hilight the current agenda line
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 
-; Keep tasks with dates off the global todo lists
-(setq org-agenda-todo-ignore-with-date t)
+; Keep tasks with scheduled dates off the global todo lists
+(setq org-agenda-todo-ignore-scheduled t)
 
 ; Remove completed deadline tasks from the agenda view
 (setq org-agenda-skip-deadline-if-done t)
 
 ; Remove completed scheduled tasks from the agenda view
 (setq org-agenda-skip-scheduled-if-done t)
-
-; We don't use the diary
-(setq org-agenda-include-diary nil)
 
 ; Include agenda archive files when searching for things
 (setq org-agenda-text-search-extra-files '(agenda-archives))
