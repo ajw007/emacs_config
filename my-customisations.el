@@ -707,10 +707,7 @@ directory, select directory. Lastly the file is opened."
              anything-c-source-man-pages
              anything-c-source-emacs-commands             
              anything-c-source-calculation-result
-             anything-c-source-occur
-             ;anything-c-source-google-suggest
-             ;anything-c-source-locate
-             ))
+             anything-c-source-occur))
 
 (global-set-key (kbd "C-;") 'anything)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
