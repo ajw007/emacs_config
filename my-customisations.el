@@ -148,6 +148,10 @@
              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
                    'nxml-mode))
 
+;; JS2 mode
+(autoload 'js2-mode "js2" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
 ;; Load snippet package
 (require 'yasnippet)
 (yas/initialize)
@@ -251,7 +255,7 @@ Subsequent calls expands the selection to larger semantic unit."
 (global-set-key (kbd "C-x r v") 'list-register)
 
 ;; Org mode setup
-(load-file "~/elisp/my-org-mode.el")
+;;(load-file "~/elisp/my-org-mode.el")
 
 ;; Turn on symbol highlighting
 (require 'highlight-symbol)
@@ -298,6 +302,9 @@ Subsequent calls expands the selection to larger semantic unit."
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'flymake-cursor)
+(require 'flymake-pyflakes)
+(require 'bats-crontabs)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful functions
 ;;
@@ -422,8 +429,8 @@ Subsequent calls expands the selection to larger semantic unit."
 (defun match-paren (arg)
   "Go to the matching parenthesis if on parenthesis otherwise insert %."
   (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+  (cond ((looking-at "\{") (forward-list 1) (backward-char 1))
+        ((looking-at "\}") (forward-char 1) (backward-list 1))
         (t (self-insert-command (or arg 1)))))
 
 ;; A somewhat insanely powerful trick, evaluate a region via a shell command and replace the region with the resulting
@@ -514,9 +521,10 @@ whatnot on a region."
   (insert ";")
   (newline-and-indent))
 
-;; Filecache configuration
-(defun file-cache-delete-svn ()
-  (file-cache-delete-file-regexp ".*\\.svn.*"))
+;; ignore svn directories and pyc files in my file cache
+(add-to-list 'file-cache-filter-regexps "/[.]svn")
+(add-to-list 'file-cache-filter-regexps "/pp")
+(add-to-list 'file-cache-filter-regexps "[.]pyc$")
 
 (defun file-cache-ido-find-file (file)
   "Using ido, interactively open file from file cache'.
@@ -616,7 +624,7 @@ directory, select directory. Lastly the file is opened."
 ;; Global keybindings                                                         
 ;;
 (global-set-key "\M-,"          	'pop-tag-mark)
-(global-set-key "\C-z"          	'advertised-undo)
+(global-set-key "\C-z"          	'undo)
 (global-set-key "\C-l"          	'my-recenter)
 (global-set-key "\C-o"          	'vi-open-next-line)
 (global-set-key "%"             	'match-paren)
@@ -669,7 +677,7 @@ directory, select directory. Lastly the file is opened."
 (global-set-key [(control f4)]          'highlight-symbol-at-point)
 (global-set-key [f4]                    'highlight-symbol-next)
 (global-set-key [(shift f4)]            'highlight-symbol-prev)
-(global-set-key (kbd "<f5>")            'slime-selector)
+;;(global-set-key (kbd "<f5>")            'slime-selector)
 (global-set-key (kbd "<f6>")            'gud-next)
 (global-set-key (kbd "<f7>")            'gud-step)
 (global-set-key (kbd "<f8>")            'gud-finish)
@@ -685,8 +693,8 @@ directory, select directory. Lastly the file is opened."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keyboard translations
 ;;
-(keyboard-translate ?\@ ?\")
-(keyboard-translate ?\" ?\@)
+;;(keyboard-translate ?\@ ?\")
+;;(keyboard-translate ?\" ?\@)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
