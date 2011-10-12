@@ -109,6 +109,17 @@
 
 ;; Turn on IDO mode with filecache
 (require 'filecache)
+
+(defun file-cache-populate ()
+  (interactive)
+  (message "Loading file cache...")
+  (file-cache-clear-cache)
+  (file-cache-add-directory-using-find "/home/awatkins/workspace")
+  (file-cache-add-directory-using-find "/home/awatkins/scratch")
+  (file-cache-add-directory-using-find "/home/awatkins/.emacs.d"))
+
+(eval-after-load "filecache" '(file-cache-populate))
+
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t) ; fuzzy matching is a must
@@ -256,6 +267,8 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;; Org mode setup
 ;;(load-file "~/elisp/my-org-mode.el")
+(require 'org-utils)
+(require 'org-config)
 
 ;; Turn on symbol highlighting
 (require 'highlight-symbol)
@@ -720,6 +733,8 @@ directory, select directory. Lastly the file is opened."
 (global-set-key (kbd "C-;") 'anything)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defalias 'rb 'revert-buffer)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load host/site specific config if it exists, make sure this gets eval'd last
 ;;
@@ -727,3 +742,4 @@ directory, select directory. Lastly the file is opened."
   (message "loading site.el")
   (if (file-exists-p site-lib) (load-file site-lib)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
